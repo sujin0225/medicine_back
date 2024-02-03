@@ -1,5 +1,6 @@
 package com.medicine.medicine_back.entity;
 
+import com.medicine.medicine_back.dto.request.auth.SignUpRequestDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -18,4 +19,19 @@ public class UserEntity {
     private String password;
     private String email;
     private String type;
+
+
+    public UserEntity(SignUpRequestDto dto) {
+        this.userId = dto.getId();
+        this.password = dto.getPassword();
+        this.email = dto.getEmail();
+        this.type = "app";
+    }
+
+    public UserEntity(String userId, String email, String type) {
+        this.userId = userId;
+        this.password = "Passw0rd!";
+        this.email = email;
+        this.type = type;
+    }
 }
