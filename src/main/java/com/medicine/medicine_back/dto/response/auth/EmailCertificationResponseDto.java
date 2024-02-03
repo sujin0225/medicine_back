@@ -11,7 +11,7 @@ public class EmailCertificationResponseDto extends ResponseDto {
         super();
     }
 
-    //성공시
+    //성공
     public static ResponseEntity<EmailCertificationResponseDto> success() {
         EmailCertificationResponseDto responseBody = new EmailCertificationResponseDto();
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);

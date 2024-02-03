@@ -1,7 +1,9 @@
 package com.medicine.medicine_back.controller;
 
+import com.medicine.medicine_back.dto.request.auth.CheckCertificationRequestDto;
 import com.medicine.medicine_back.dto.request.auth.EmailCertificationRequestDto;
 import com.medicine.medicine_back.dto.request.auth.IdCheckRequestDto;
+import com.medicine.medicine_back.dto.response.auth.CheckCertificationResponseDto;
 import com.medicine.medicine_back.dto.response.auth.EmailCertificationResponseDto;
 import com.medicine.medicine_back.dto.response.auth.IdCheckResponseDto;
 import com.medicine.medicine_back.service.AuthService;
@@ -35,6 +37,15 @@ public class AuthController {
             @RequestBody @Valid EmailCertificationRequestDto requestBody
     ) {
         ResponseEntity<? super EmailCertificationResponseDto> response = authService.emailCertification(requestBody);
+        return response;
+    }
+
+    //인증 번호 확인
+    @PostMapping("/check-certification")
+    public ResponseEntity<? super CheckCertificationResponseDto> checkCertification (
+            @RequestBody @Valid CheckCertificationRequestDto requestBody
+    ) {
+        ResponseEntity<? super CheckCertificationResponseDto> response = authService.checkCertification(requestBody);
         return response;
     }
 }

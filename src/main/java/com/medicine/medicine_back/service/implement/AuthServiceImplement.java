@@ -1,13 +1,16 @@
 package com.medicine.medicine_back.service.implement;
 
 import com.medicine.medicine_back.common.CertificationNumber;
+import com.medicine.medicine_back.dto.request.auth.CheckCertificationRequestDto;
 import com.medicine.medicine_back.dto.request.auth.EmailCertificationRequestDto;
 import com.medicine.medicine_back.dto.request.auth.IdCheckRequestDto;
 import com.medicine.medicine_back.dto.response.ResponseDto;
+import com.medicine.medicine_back.dto.response.auth.CheckCertificationResponseDto;
 import com.medicine.medicine_back.dto.response.auth.EmailCertificationResponseDto;
 import com.medicine.medicine_back.dto.response.auth.IdCheckResponseDto;
 import com.medicine.medicine_back.entity.CertificationEntity;
 import com.medicine.medicine_back.provider.EmailProvider;
+import com.medicine.medicine_back.provider.JwtProvider;
 import com.medicine.medicine_back.repository.CertificationRepository;
 import com.medicine.medicine_back.repository.UserRepository;
 import com.medicine.medicine_back.service.AuthService;
@@ -23,6 +26,7 @@ public class AuthServiceImplement implements AuthService {
     private final CertificationRepository certificationRepository;
 
     private final EmailProvider emailProvider;
+    private final JwtProvider jwtProvider;
 
     //아이디 중복 체크
     @Override
@@ -63,5 +67,27 @@ public class AuthServiceImplement implements AuthService {
             return ResponseDto.databaseError();
         }
         return EmailCertificationResponseDto.success();
+    }
+
+    //인증 번호 확인
+    @Override
+    public ResponseEntity<? super CheckCertificationResponseDto> checkCertification(CheckCertificationRequestDto dto) {
+        try {
+
+            String userId = dto.getId();
+            String email = dto.getEmail();
+            String certificationNumber = dto.getCertificationNumber();
+
+            CertificationEntity certificationEntity = certificationRepository.findByUserId(userId);
+            if (certificationEntity == null) return CheckCertificationResponseDto.certificationFail();
+
+            boolean isMatched = certificationEntity.getEmail().equals(email) && certificationEntity.getCertificationNumber().equals(certificationNumber);
+            if (!isMatched) return CheckCertificationResponseDto.certificationFail();
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return CheckCertificationResponseDto.success();
     }
 }
