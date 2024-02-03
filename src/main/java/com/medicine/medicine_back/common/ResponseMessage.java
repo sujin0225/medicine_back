@@ -6,5 +6,6 @@ public interface ResponseMessage {
     String DUPLICATE_ID = "중복된 아이디";
     String SIGN_IN_FAIL = "로그인 실패";
     String CERTIFICATION_FAIL = "이메일 인증 번호 불일치";
+    String MAIL_FAIL = "메일 전송 실패";
     String DATABASE_ERROR = "데이터베이스 오류";
 }

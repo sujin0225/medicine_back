@@ -1,6 +1,8 @@
 package com.medicine.medicine_back.controller;
 
+import com.medicine.medicine_back.dto.request.auth.EmailCertificationRequestDto;
 import com.medicine.medicine_back.dto.request.auth.IdCheckRequestDto;
+import com.medicine.medicine_back.dto.response.auth.EmailCertificationResponseDto;
 import com.medicine.medicine_back.dto.response.auth.IdCheckResponseDto;
 import com.medicine.medicine_back.service.AuthService;
 import jakarta.validation.Valid;
@@ -18,11 +20,21 @@ public class AuthController {
 
     private final AuthService authService;
 
+    //아이디 중복 확인
     @PostMapping("/id-check")
     public ResponseEntity<? super IdCheckResponseDto> idCheck(
             @RequestBody @Valid IdCheckRequestDto requestBody
             ) {
             ResponseEntity<? super IdCheckResponseDto> response = authService.idCheck(requestBody);
             return response;
+    }
+
+    //이메일 인증
+    @PostMapping("/email-certification")
+    public ResponseEntity<? super EmailCertificationResponseDto> emailCertification (
+            @RequestBody @Valid EmailCertificationRequestDto requestBody
+    ) {
+        ResponseEntity<? super EmailCertificationResponseDto> response = authService.emailCertification(requestBody);
+        return response;
     }
 }
