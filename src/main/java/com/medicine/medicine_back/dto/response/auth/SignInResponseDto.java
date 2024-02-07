@@ -4,19 +4,22 @@ import com.medicine.medicine_back.common.ResponseCode;
 import com.medicine.medicine_back.common.ResponseMessage;
 import com.medicine.medicine_back.dto.response.ResponseDto;
 import lombok.Getter;
-import org.aspectj.apache.bcel.generic.RET;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @Getter
 public class SignInResponseDto extends ResponseDto {
-    private SignInResponseDto() {
+    private String token;
+    private int expirationTime;
+    private SignInResponseDto(String token) {
         super();
+        this.token = token;
+        this.expirationTime = 3600;
     }
 
     //성공
     public static ResponseEntity<SignInResponseDto> success(String token) {
-        SignInResponseDto responseBody = new SignInResponseDto();
+        SignInResponseDto responseBody = new SignInResponseDto(token);
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 
