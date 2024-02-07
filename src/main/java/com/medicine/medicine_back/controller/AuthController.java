@@ -1,13 +1,7 @@
 package com.medicine.medicine_back.controller;
 
-import com.medicine.medicine_back.dto.request.auth.CheckCertificationRequestDto;
-import com.medicine.medicine_back.dto.request.auth.EmailCertificationRequestDto;
-import com.medicine.medicine_back.dto.request.auth.IdCheckRequestDto;
-import com.medicine.medicine_back.dto.request.auth.SignUpRequestDto;
-import com.medicine.medicine_back.dto.response.auth.CheckCertificationResponseDto;
-import com.medicine.medicine_back.dto.response.auth.EmailCertificationResponseDto;
-import com.medicine.medicine_back.dto.response.auth.IdCheckResponseDto;
-import com.medicine.medicine_back.dto.response.auth.SignUpResponseDto;
+import com.medicine.medicine_back.dto.request.auth.*;
+import com.medicine.medicine_back.dto.response.auth.*;
 import com.medicine.medicine_back.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +51,15 @@ public class AuthController {
             @RequestBody @Valid SignUpRequestDto requestBody
     ){
         ResponseEntity<? super SignUpResponseDto> response = authService.signUp(requestBody);
+        return response;
+    }
+
+    //로그인
+    @PostMapping("/sign-in")
+    public ResponseEntity<? super SignInResponseDto> signIn (
+            @RequestBody @Valid SignInRequestDto requestBody
+            ) {
+        ResponseEntity<? super SignInResponseDto> response = authService.signIn(requestBody);
         return response;
     }
 }

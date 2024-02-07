@@ -1,15 +1,9 @@
 package com.medicine.medicine_back.service.implement;
 
 import com.medicine.medicine_back.common.CertificationNumber;
-import com.medicine.medicine_back.dto.request.auth.CheckCertificationRequestDto;
-import com.medicine.medicine_back.dto.request.auth.EmailCertificationRequestDto;
-import com.medicine.medicine_back.dto.request.auth.IdCheckRequestDto;
-import com.medicine.medicine_back.dto.request.auth.SignUpRequestDto;
+import com.medicine.medicine_back.dto.request.auth.*;
 import com.medicine.medicine_back.dto.response.ResponseDto;
-import com.medicine.medicine_back.dto.response.auth.CheckCertificationResponseDto;
-import com.medicine.medicine_back.dto.response.auth.EmailCertificationResponseDto;
-import com.medicine.medicine_back.dto.response.auth.IdCheckResponseDto;
-import com.medicine.medicine_back.dto.response.auth.SignUpResponseDto;
+import com.medicine.medicine_back.dto.response.auth.*;
 import com.medicine.medicine_back.entity.CertificationEntity;
 import com.medicine.medicine_back.entity.UserEntity;
 import com.medicine.medicine_back.provider.EmailProvider;
@@ -131,5 +125,30 @@ public class AuthServiceImplement implements AuthService {
             return ResponseDto.databaseError();
         }
         return SignUpResponseDto.success();
+    }
+
+    //로그인
+    @Override
+    public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
+        String token = null;
+
+        try {
+
+            String userId = dto.getId();
+            UserEntity userEntity = userRepository.findByUserId(userId);
+            if (userEntity == null) return SignInResponseDto.signInFail();
+
+            String password = dto.getPassword();
+            String encodedPassword = userEntity.getPassword();
+            boolean isMatched = passwordEncoder.matches(password, encodedPassword);
+            if (!isMatched) return SignInResponseDto.signInFail();
+
+            token = jwtProvider.create(userId);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return SignInResponseDto.success(token);
     }
 }
