@@ -48,7 +48,7 @@ public class WebSecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/auth/*", "/medicine/**").permitAll()
+                        .requestMatchers("/", "/auth/*", "/medicine/**", "/review/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
@@ -60,7 +60,10 @@ public class WebSecurityConfig {
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(new FailedAuthenticationEntryPoint())
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .headers(headers -> headers
+                        .contentTypeOptions(options -> options.disable())
+                );
 
         return httpSecurity.build();
     }
@@ -89,6 +92,6 @@ class FailedAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         // {"code":"NP", "message": "No Permission."}
-        response.getWriter().write("{{\"code\":\"NP\", \"message\": \"No Permission.\"}}");
+        response.getWriter().write("{\"code\":\"NP\", \"message\": \"No Permission.\"}");
     }
 }

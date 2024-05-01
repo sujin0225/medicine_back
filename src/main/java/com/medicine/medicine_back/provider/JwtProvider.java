@@ -28,6 +28,8 @@ public class JwtProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setSubject(userId).setIssuedAt(new Date()).setExpiration(expiredDate)
                 .compact();
+        System.out.println("생성된 JWT 토큰: " + jwt);
+
         return jwt;
     }
     public String validate(String jwt) {

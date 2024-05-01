@@ -27,6 +27,7 @@ public class AuthServiceImplement implements AuthService {
     private final EmailProvider emailProvider;
     private final JwtProvider jwtProvider;
 
+    //비밀번호 암호화
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     //아이디 중복 체크
