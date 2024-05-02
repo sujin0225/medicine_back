@@ -2,6 +2,7 @@ package com.medicine.medicine_back.controller;
 
 import com.medicine.medicine_back.dto.request.review.PostReviewRequestDto;
 //import com.medicine.medicine_back.dto.response.review.GetReviewResponseDto;
+import com.medicine.medicine_back.dto.response.review.GetReviewResponseDto;
 import com.medicine.medicine_back.dto.response.review.PostReviewResponseDto;
 import com.medicine.medicine_back.service.ReviewService;
 import jakarta.validation.Valid;
@@ -18,13 +19,13 @@ public class ReviewController {
 
 
 //    //리뷰 리스트 불러오기
-//    @GetMapping("/{ITEM_SEQ}")
-//    public ResponseEntity<? super GetReviewResponseDto> getReview(
-//            @PathVariable("ITEM_SEQ") String ITEM_SEQ
-//    ){
-//        ResponseEntity<? super GetReviewResponseDto> response = reviewService.getReview(ITEM_SEQ);
-//        return response;
-//    }
+    @GetMapping("/{ITEM_SEQ}")
+    public ResponseEntity<? super GetReviewResponseDto> getReview(
+            @PathVariable("ITEM_SEQ") String ITEM_SEQ
+    ){
+        ResponseEntity<? super GetReviewResponseDto> response = reviewService.getReview(ITEM_SEQ);
+        return response;
+    }
 
     //리뷰 작성하기
     @PostMapping("/{ITEM_SEQ}")

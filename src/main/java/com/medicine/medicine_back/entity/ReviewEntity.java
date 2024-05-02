@@ -19,9 +19,12 @@ public class ReviewEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "review_number")
     private int reviewNumber;
+    @Column(name = "ITEM_SEQ")
+    private String itemSeq;
+//    private String ITEM_SEQ;
     private String userId;
-    private String ITEM_SEQ;
     private String content;
     private String writeDatetime;
     private int starRating;
@@ -31,7 +34,7 @@ public class ReviewEntity {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String writeDatetime = simpleDateFormat.format(now);
 
-        this.ITEM_SEQ = ITEM_SEQ;
+        this.itemSeq = ITEM_SEQ;
         this.userId = userId;
         this.content = dto.getContent();
         this.starRating = dto.getStarRating();

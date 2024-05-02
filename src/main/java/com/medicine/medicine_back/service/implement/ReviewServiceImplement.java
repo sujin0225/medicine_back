@@ -1,13 +1,17 @@
 package com.medicine.medicine_back.service.implement;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.medicine.medicine_back.dto.object.ReviewListItem;
 import com.medicine.medicine_back.dto.request.review.PostReviewRequestDto;
 //import com.medicine.medicine_back.dto.response.review.GetReviewResponseDto;
+import com.medicine.medicine_back.dto.response.ResponseDto;
+import com.medicine.medicine_back.dto.response.review.GetReviewResponseDto;
 import com.medicine.medicine_back.dto.response.review.PostReviewResponseDto;
 import com.medicine.medicine_back.entity.ReviewEntity;
 import com.medicine.medicine_back.repository.ImageRepository;
 import com.medicine.medicine_back.repository.ReviewRepository;
 //import com.medicine.medicine_back.repository.resultSet.GetReviewResultSet;
+import com.medicine.medicine_back.repository.resultSet.GetReviewResultSet;
 import com.medicine.medicine_back.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,29 +39,36 @@ public class ReviewServiceImplement implements ReviewService {
     private String apiUrl;
 
     //리뷰 리스트 불러오기
-//    @Override
-//    public ResponseEntity<? super GetReviewResponseDto> getReview(String ITEM_SEQ) {
-//        List<GetReviewResultSet> resultSet = new ArrayList<>();
-////        List<ImageEntity> imageEntities = new ArrayList<>();
-//
-//        try {
-//            boolean existsByItemSeq = reviewRepository.existsByItemSeq(ITEM_SEQ);
-//            if (!existsByItemSeq) return GetReviewResponseDto.notExistMedicine();
-//
-//            // 명시적으로 변수의 유형을 지정하여 할당
+    @Override
+    public ResponseEntity<? super GetReviewResponseDto> getReview(String ITEM_SEQ) {
+//        List<ReviewEntity> resultSet = new ArrayList<>();
+        List<GetReviewResultSet> resultSet = new ArrayList<>();
+//        List<ImageEntity> imageEntities = new ArrayList<>();
+
+        try {
+            String itemSeq = fetchItemSeq(ITEM_SEQ);
+            boolean existsByItemSeq = reviewRepository.existsByItemSeq(itemSeq);
+            if (!existsByItemSeq) return GetReviewResponseDto.notExistReview();
+
+            // 명시적으로 변수의 유형을 지정하여 할당
 //            resultSet.addAll(reviewRepository.getReview(ITEM_SEQ));
-//
-//            // 이미지 엔터티를 가져오는 코드
-////            imageEntities = imageRepository.findByReviewNumber(reviewNumber);
-//
-//        } catch (Exception exception) {
-//            exception.printStackTrace();
-//            return ResponseDto.databaseError();
-//        }
-//
-//        // 이미지 엔터티와 함께 리뷰 결과를 반환
+            resultSet = reviewRepository.getReview(itemSeq);
+
+            // 이미지 엔터티를 가져오는 코드
+//            imageEntities = imageRepository.findByReviewNumber(reviewNumber);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        // 이미지 엔터티와 함께 리뷰 결과를 반환
 //        return GetReviewResponseDto.success(resultSet);
-//    }
+//        List<ReviewListItem> reviewListItems = ReviewListItem.copyList(resultSet);
+
+        // 변환된 리스트를 가지고 성공 응답 DTO 생성
+        return GetReviewResponseDto.success(resultSet);
+    }
 
 
 
