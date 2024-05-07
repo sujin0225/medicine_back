@@ -25,7 +25,7 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, String> {
                             "R.user_id AS userId, " +
                             "R.content AS content, " +
                             "R.write_datetime AS writeDatetime, " +
-//                            "R.helpful_count AS helpfulCount, " +
+                            "R.helpful_count AS helpfulCount, " +
                             "R.star_rating AS starRating " +
                             "FROM review AS R " +
                             "INNER JOIN user AS U " +

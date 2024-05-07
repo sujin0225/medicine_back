@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
         private String content;
         private List<String> reviewImageList;
         private String writeDatetime;
-        //    private String helpfulCount;
+        private int helpfulCount;
         private int starRating;
 
         public ReviewListItem(GetReviewResultSet resultSet, List<ImageEntity> imageEntities) {
@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
                     .map(ImageEntity::getImage)
                     .collect(Collectors.toList());
             this.writeDatetime = resultSet.getWriteDatetime();
+            this.starRating = resultSet.getStarRating();
             this.starRating = resultSet.getStarRating();
         }
 

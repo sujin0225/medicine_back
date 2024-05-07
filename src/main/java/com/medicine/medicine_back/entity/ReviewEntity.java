@@ -23,10 +23,10 @@ public class ReviewEntity {
     private int reviewNumber;
     @Column(name = "ITEM_SEQ")
     private String itemSeq;
-//    private String ITEM_SEQ;
     private String userId;
     private String content;
     private String writeDatetime;
+//    private int helpfulCount;
     private int starRating;
 
     public ReviewEntity(PostReviewRequestDto dto, String ITEM_SEQ, String userId) {
@@ -38,6 +38,7 @@ public class ReviewEntity {
         this.userId = userId;
         this.content = dto.getContent();
         this.starRating = dto.getStarRating();
+//        this.helpfulCount = dto.getHelpfulCount();
         this.writeDatetime = writeDatetime;
     }
 }
