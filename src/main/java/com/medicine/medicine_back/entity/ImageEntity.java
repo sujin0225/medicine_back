@@ -21,4 +21,11 @@ public class ImageEntity {
         this.reviewNumber = reviewNumber;
         this.image = image;
     }
+    @Override
+    public String toString() {
+        return "ImageEntity{" +
+                "reviewNumber=" + reviewNumber +
+                ", imageUrl='" + image + '\'' +
+                '}';
+    }
 }
