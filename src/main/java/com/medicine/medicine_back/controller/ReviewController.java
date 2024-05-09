@@ -1,9 +1,11 @@
 package com.medicine.medicine_back.controller;
 
+import com.medicine.medicine_back.dto.request.review.PatchReviewRequestDto;
 import com.medicine.medicine_back.dto.request.review.PostReviewRequestDto;
 //import com.medicine.medicine_back.dto.response.review.GetReviewResponseDto;
 import com.medicine.medicine_back.dto.response.review.DeleteReviewResponseDto;
 import com.medicine.medicine_back.dto.response.review.GetReviewResponseDto;
+import com.medicine.medicine_back.dto.response.review.PatchReviewResponseDto;
 import com.medicine.medicine_back.dto.response.review.PostReviewResponseDto;
 import com.medicine.medicine_back.service.ReviewService;
 import jakarta.validation.Valid;
@@ -45,6 +47,17 @@ public class ReviewController {
             @AuthenticationPrincipal String userId
     ){
         ResponseEntity<? super DeleteReviewResponseDto> response = reviewService.deleteReview(reviewNumber, userId);
+        return response;
+    }
+
+    //리뷰 수정하기
+    @PatchMapping("/{reviewNumber}")
+    public ResponseEntity<? super PatchReviewResponseDto> patchReview(
+            @RequestBody @Valid PatchReviewRequestDto requestBody,
+            @PathVariable("reviewNumber") Integer reviewNumber,
+            @AuthenticationPrincipal String userId
+            ) {
+        ResponseEntity<? super PatchReviewResponseDto> response = reviewService.patchReview(requestBody, reviewNumber, userId);
         return response;
     }
 }

@@ -1,8 +1,10 @@
 package com.medicine.medicine_back.service.implement;
+import com.medicine.medicine_back.dto.request.review.PatchReviewRequestDto;
 import com.medicine.medicine_back.dto.request.review.PostReviewRequestDto;
 import com.medicine.medicine_back.dto.response.ResponseDto;
 import com.medicine.medicine_back.dto.response.review.DeleteReviewResponseDto;
 import com.medicine.medicine_back.dto.response.review.GetReviewResponseDto;
+import com.medicine.medicine_back.dto.response.review.PatchReviewResponseDto;
 import com.medicine.medicine_back.dto.response.review.PostReviewResponseDto;
 import com.medicine.medicine_back.entity.ImageEntity;
 import com.medicine.medicine_back.entity.ReviewEntity;
@@ -126,6 +128,41 @@ public class ReviewServiceImplement implements ReviewService {
             return ResponseDto.databaseError();
         }
         return DeleteReviewResponseDto.success();
+    }
+
+    //리뷰 수정
+    @Override
+    public ResponseEntity<? super PatchReviewResponseDto> patchReview(PatchReviewRequestDto dto, Integer reviewNumber, String userId) {
+        try {
+            ReviewEntity reviewEntity = reviewRepository.findByReviewNumber(reviewNumber);
+            if(reviewEntity == null) return PatchReviewResponseDto.noExistMedicine();
+
+            boolean existedUser = userRespository.existsByUserId(userId);
+            if(!existedUser) return PatchReviewResponseDto.noExistUser();
+
+            String writerEmail = reviewEntity.getUserId();
+            boolean isWriter = writerEmail.equals(userId);
+            if(!isWriter) return PatchReviewResponseDto.noPermission();
+
+            reviewEntity.patchReview(dto);
+            reviewRepository.save(reviewEntity);
+
+            imageRepository.deleteByReviewNumber(reviewNumber);
+            List<String> boardImageList = dto.getReviewImageList();
+            List<ImageEntity> imageEntities = new ArrayList<>();
+
+            for(String image: boardImageList) {
+                ImageEntity imageEntity = new ImageEntity(reviewNumber, image);
+                imageEntities.add(imageEntity);
+            }
+
+            imageRepository.saveAll(imageEntities);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return PatchReviewResponseDto.success();
     }
 
     //타임아웃

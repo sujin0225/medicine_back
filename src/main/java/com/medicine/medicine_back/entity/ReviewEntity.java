@@ -1,5 +1,6 @@
 package com.medicine.medicine_back.entity;
 
+import com.medicine.medicine_back.dto.request.review.PatchReviewRequestDto;
 import com.medicine.medicine_back.dto.request.review.PostReviewRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -40,5 +41,9 @@ public class ReviewEntity {
         this.starRating = dto.getStarRating();
 //        this.helpfulCount = dto.getHelpfulCount();
         this.writeDatetime = writeDatetime;
+    }
+
+    public void patchReview(PatchReviewRequestDto dto) {
+        this.content = dto.getContent();
     }
 }
