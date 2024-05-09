@@ -1,6 +1,7 @@
 package com.medicine.medicine_back.service.implement;
 import com.medicine.medicine_back.dto.request.review.PostReviewRequestDto;
 import com.medicine.medicine_back.dto.response.ResponseDto;
+import com.medicine.medicine_back.dto.response.review.DeleteReviewResponseDto;
 import com.medicine.medicine_back.dto.response.review.GetReviewResponseDto;
 import com.medicine.medicine_back.dto.response.review.PostReviewResponseDto;
 import com.medicine.medicine_back.entity.ImageEntity;
@@ -102,6 +103,29 @@ public class ReviewServiceImplement implements ReviewService {
             return ResponseDto.databaseError();
         }
         return PostReviewResponseDto.success();
+    }
+
+    //리뷰 삭제
+    @Override
+    public ResponseEntity<? super DeleteReviewResponseDto> deleteReview(Integer reviewNumber, String userId) {
+        try {
+            boolean existedUser = userRespository.existsByUserId(userId);
+            if (!existedUser) return DeleteReviewResponseDto.noExistUser();
+
+            ReviewEntity reviewEntity = reviewRepository.findByReviewNumber(reviewNumber);
+            if (reviewEntity == null) return DeleteReviewResponseDto.noExistReview();
+
+            String writerId = reviewEntity.getUserId();
+            boolean isWriter = writerId.equals(userId);
+            if (!isWriter) return DeleteReviewResponseDto.noPermission();
+
+            imageRepository.deleteByReviewNumber(reviewNumber);
+            reviewRepository.delete(reviewEntity);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return DeleteReviewResponseDto.success();
     }
 
     //타임아웃

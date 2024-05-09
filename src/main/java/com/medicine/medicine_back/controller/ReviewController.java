@@ -2,6 +2,7 @@ package com.medicine.medicine_back.controller;
 
 import com.medicine.medicine_back.dto.request.review.PostReviewRequestDto;
 //import com.medicine.medicine_back.dto.response.review.GetReviewResponseDto;
+import com.medicine.medicine_back.dto.response.review.DeleteReviewResponseDto;
 import com.medicine.medicine_back.dto.response.review.GetReviewResponseDto;
 import com.medicine.medicine_back.dto.response.review.PostReviewResponseDto;
 import com.medicine.medicine_back.service.ReviewService;
@@ -17,8 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class ReviewController {
     private final ReviewService reviewService;
 
-
-//    //리뷰 리스트 불러오기
+    //리뷰 리스트 불러오기
     @GetMapping("/{ITEM_SEQ}")
     public ResponseEntity<? super GetReviewResponseDto> getReview(
             @PathVariable("ITEM_SEQ") String ITEM_SEQ
@@ -38,4 +38,13 @@ public class ReviewController {
         return response;
     }
 
+    //리뷰 삭제하기
+    @DeleteMapping("/{reviewNumber}")
+    public ResponseEntity<?super DeleteReviewResponseDto> deleteReview(
+            @PathVariable("reviewNumber") Integer reviewNumber,
+            @AuthenticationPrincipal String userId
+    ){
+        ResponseEntity<? super DeleteReviewResponseDto> response = reviewService.deleteReview(reviewNumber, userId);
+        return response;
+    }
 }

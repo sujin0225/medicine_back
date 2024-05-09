@@ -1,6 +1,5 @@
 package com.medicine.medicine_back.repository;
 
-import com.medicine.medicine_back.dto.object.ReviewListItem;
 import com.medicine.medicine_back.entity.ReviewEntity;
 //import com.medicine.medicine_back.repository.resultSet.GetReviewResultSet;
 import com.medicine.medicine_back.repository.resultSet.GetReviewResultSet;
@@ -14,7 +13,7 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends JpaRepository<ReviewEntity, String> {
     boolean existsByItemSeq(String ITEM_SEQ);
-//    ReviewEntity findByItemSeq(String ITEM_SEQ);
+    ReviewEntity findByReviewNumber(Integer reviewNumber);
 //    List<ReviewEntity> findByItemSeq(String ITEM_SEQ);
 
     @Query(
