@@ -45,5 +45,6 @@ public class ReviewEntity {
 
     public void patchReview(PatchReviewRequestDto dto) {
         this.content = dto.getContent();
+        this.starRating = dto.getStarRating();
     }
 }

@@ -140,8 +140,8 @@ public class ReviewServiceImplement implements ReviewService {
             boolean existedUser = userRespository.existsByUserId(userId);
             if(!existedUser) return PatchReviewResponseDto.noExistUser();
 
-            String writerEmail = reviewEntity.getUserId();
-            boolean isWriter = writerEmail.equals(userId);
+            String writerId = reviewEntity.getUserId();
+            boolean isWriter = writerId.equals(userId);
             if(!isWriter) return PatchReviewResponseDto.noPermission();
 
             reviewEntity.patchReview(dto);
