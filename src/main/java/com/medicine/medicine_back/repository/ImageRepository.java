@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface ImageRepository extends JpaRepository<ImageEntity, Integer> {
 List<ImageEntity> findByReviewNumberIn(List<Integer> reviewNumbers);
+List<ImageEntity> findByReviewNumber(Integer reviewNumber);
 
 @Transactional
     void deleteByReviewNumber(Integer reviewNumber);

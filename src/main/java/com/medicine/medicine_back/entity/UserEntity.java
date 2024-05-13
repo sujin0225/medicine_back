@@ -19,7 +19,7 @@ public class UserEntity {
     private String password;
     private String email;
     private String type;
-
+ 
 
     public UserEntity(SignUpRequestDto dto) {
         this.userId = dto.getId();

@@ -34,6 +34,9 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, String> {
             nativeQuery = true
     )
 //    List<ReviewEntity> getReview(@Param("itemSeq") String itemSeq);
-    List<GetReviewResultSet> getReview(@Param("itemSeq") String itemSeq);
+    List<GetReviewResultSet> getReviewList(@Param("itemSeq") String itemSeq);
+
+//    GetReviewResultSet getReview(Integer reviewNumber);
+//    GetReviewResultSet getReview(@Param("reviewNumber") Integer reviewNumber);
 }
 

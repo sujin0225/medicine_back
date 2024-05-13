@@ -44,7 +44,12 @@ public class ReviewEntity {
     }
 
     public void patchReview(PatchReviewRequestDto dto) {
+        Date now = Date.from(Instant.now());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String writeDatetime = simpleDateFormat.format(now);
+
         this.content = dto.getContent();
         this.starRating = dto.getStarRating();
+        this.writeDatetime = writeDatetime;
     }
 }

@@ -3,10 +3,7 @@ package com.medicine.medicine_back.controller;
 import com.medicine.medicine_back.dto.request.review.PatchReviewRequestDto;
 import com.medicine.medicine_back.dto.request.review.PostReviewRequestDto;
 //import com.medicine.medicine_back.dto.response.review.GetReviewResponseDto;
-import com.medicine.medicine_back.dto.response.review.DeleteReviewResponseDto;
-import com.medicine.medicine_back.dto.response.review.GetReviewResponseDto;
-import com.medicine.medicine_back.dto.response.review.PatchReviewResponseDto;
-import com.medicine.medicine_back.dto.response.review.PostReviewResponseDto;
+import com.medicine.medicine_back.dto.response.review.*;
 import com.medicine.medicine_back.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +19,19 @@ public class ReviewController {
 
     //리뷰 리스트 불러오기
     @GetMapping("/{ITEM_SEQ}")
-    public ResponseEntity<? super GetReviewResponseDto> getReview(
+    public ResponseEntity<? super GetReviewListResponseDto> getReviewList(
             @PathVariable("ITEM_SEQ") String ITEM_SEQ
     ){
-        ResponseEntity<? super GetReviewResponseDto> response = reviewService.getReview(ITEM_SEQ);
+        ResponseEntity<? super GetReviewListResponseDto> response = reviewService.getReviewList(ITEM_SEQ);
+        return response;
+    }
+
+    //리뷰 불러오기
+    @GetMapping("details/{reviewNumber}")
+    public ResponseEntity<? super GetReviewResponseDto> getReview(
+            @PathVariable("reviewNumber") Integer reviewNumber
+    ){
+        ResponseEntity<? super GetReviewResponseDto> response = reviewService.getReview(reviewNumber);
         return response;
     }
 

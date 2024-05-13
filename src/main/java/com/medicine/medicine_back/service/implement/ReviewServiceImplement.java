@@ -2,13 +2,11 @@ package com.medicine.medicine_back.service.implement;
 import com.medicine.medicine_back.dto.request.review.PatchReviewRequestDto;
 import com.medicine.medicine_back.dto.request.review.PostReviewRequestDto;
 import com.medicine.medicine_back.dto.response.ResponseDto;
-import com.medicine.medicine_back.dto.response.review.DeleteReviewResponseDto;
-import com.medicine.medicine_back.dto.response.review.GetReviewResponseDto;
-import com.medicine.medicine_back.dto.response.review.PatchReviewResponseDto;
-import com.medicine.medicine_back.dto.response.review.PostReviewResponseDto;
+import com.medicine.medicine_back.dto.response.review.*;
 import com.medicine.medicine_back.entity.ImageEntity;
 import com.medicine.medicine_back.entity.ReviewEntity;
 import com.medicine.medicine_back.repository.ImageRepository;
+import com.medicine.medicine_back.repository.ReviewGetRepository;
 import com.medicine.medicine_back.repository.ReviewRepository;
 import com.medicine.medicine_back.repository.UserRepository;
 import com.medicine.medicine_back.repository.resultSet.GetReviewResultSet;
@@ -20,9 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +26,7 @@ import java.util.stream.Collectors;
 public class ReviewServiceImplement implements ReviewService {
     private final UserRepository userRespository;
     private final ReviewRepository reviewRepository;
+    private final ReviewGetRepository reviewGetRepository;
     private final ImageRepository imageRepository;
     private final RestTemplate restTemplate;
 
@@ -42,16 +39,16 @@ public class ReviewServiceImplement implements ReviewService {
 
     //리뷰 리스트 불러오기
     @Override
-    public ResponseEntity<? super GetReviewResponseDto> getReview(String ITEM_SEQ) {
+    public ResponseEntity<? super GetReviewListResponseDto> getReviewList(String ITEM_SEQ) {
         List<GetReviewResultSet> resultSet = new ArrayList<>();
         List<ImageEntity> imageEntities = new ArrayList<>();
 
         try {
             boolean existsByItemSeq = reviewRepository.existsByItemSeq(ITEM_SEQ);
-            if (!existsByItemSeq) return GetReviewResponseDto.notExistReview();
+            if (!existsByItemSeq) return GetReviewListResponseDto.notExistReview();
 
-            resultSet = reviewRepository.getReview(ITEM_SEQ);
-            if (resultSet == null || resultSet.isEmpty()) return GetReviewResponseDto.notExistReview();
+            resultSet = reviewRepository.getReviewList(ITEM_SEQ);
+            if (resultSet == null || resultSet.isEmpty()) return GetReviewListResponseDto.notExistReview();
 
             // resultSet에서 reviewNumber를 추출하여 리스트 생성
             List<Integer> reviewNumber = resultSet.stream()
@@ -67,6 +64,23 @@ public class ReviewServiceImplement implements ReviewService {
             return ResponseDto.databaseError();
         }
         // 변환된 리스트를 가지고 성공 응답 DTO 생성
+        return GetReviewListResponseDto.success(resultSet, imageEntities);
+    }
+
+    @Override
+    public ResponseEntity<? super GetReviewResponseDto> getReview(Integer reviewNumber) {
+        GetReviewResultSet resultSet = null;
+        List<ImageEntity> imageEntities = new ArrayList<>();
+
+        try {
+            resultSet = reviewGetRepository.getReview(reviewNumber);
+            if (resultSet == null) return GetReviewResponseDto.notExistReview();
+
+            imageEntities = imageRepository.findByReviewNumber(reviewNumber);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
         return GetReviewResponseDto.success(resultSet, imageEntities);
     }
 
@@ -148,10 +162,10 @@ public class ReviewServiceImplement implements ReviewService {
             reviewRepository.save(reviewEntity);
 
             imageRepository.deleteByReviewNumber(reviewNumber);
-            List<String> boardImageList = dto.getReviewImageList();
+            List<String> reviewImageList = dto.getReviewImageList();
             List<ImageEntity> imageEntities = new ArrayList<>();
 
-            for(String image: boardImageList) {
+            for(String image: reviewImageList) {
                 ImageEntity imageEntity = new ImageEntity(reviewNumber, image);
                 imageEntities.add(imageEntity);
             }
