@@ -27,7 +27,7 @@ public class ReviewController {
     }
 
     //리뷰 불러오기
-    @GetMapping("details/{reviewNumber}")
+    @GetMapping("/details/{reviewNumber}")
     public ResponseEntity<? super GetReviewResponseDto> getReview(
             @PathVariable("reviewNumber") Integer reviewNumber
     ){
@@ -64,6 +64,25 @@ public class ReviewController {
             @AuthenticationPrincipal String userId
             ) {
         ResponseEntity<? super PatchReviewResponseDto> response = reviewService.patchReview(requestBody, reviewNumber, userId);
+        return response;
+    }
+
+    //도움돼요 리스트 불러오기
+    @GetMapping("/helpful-list/{reviewNumber}")
+    public ResponseEntity<? super GetHelpfulListResponseDto> getFavoriteList(
+            @PathVariable("reviewNumber") Integer reviewNumber
+    ){
+        ResponseEntity<? super GetHelpfulListResponseDto> response = reviewService.getHelpfulList(reviewNumber);
+        return response;
+    }
+
+    //도움돼요 기능
+    @PutMapping("/helpful/{reviewNumber}")
+    public ResponseEntity<? super PutHelpfulResponseDto> putFavorite(
+            @PathVariable("reviewNumber") Integer reviewNumber,
+            @AuthenticationPrincipal String userId
+    ) {
+        ResponseEntity<? super PutHelpfulResponseDto> response = reviewService.putFavorite(reviewNumber, userId);
         return response;
     }
 }

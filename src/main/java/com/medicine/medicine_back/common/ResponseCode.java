@@ -12,4 +12,5 @@ public interface ResponseCode {
     String NOT_EXISTED_MEDICINE = "NM"; //존재하지 않는 의약품
     String NOT_EXISTED_USER = "NU"; //존재하지 않는 유저
     String NO_PERMISSION = "NP"; //권한 없음
+    String NOT_EXISTED_REVIEW = "NR"; //존재하지 않는 의약품
 }

@@ -3,12 +3,11 @@ import com.medicine.medicine_back.dto.request.review.PatchReviewRequestDto;
 import com.medicine.medicine_back.dto.request.review.PostReviewRequestDto;
 import com.medicine.medicine_back.dto.response.ResponseDto;
 import com.medicine.medicine_back.dto.response.review.*;
+import com.medicine.medicine_back.entity.HelpfulEntity;
 import com.medicine.medicine_back.entity.ImageEntity;
 import com.medicine.medicine_back.entity.ReviewEntity;
-import com.medicine.medicine_back.repository.ImageRepository;
-import com.medicine.medicine_back.repository.ReviewGetRepository;
-import com.medicine.medicine_back.repository.ReviewRepository;
-import com.medicine.medicine_back.repository.UserRepository;
+import com.medicine.medicine_back.repository.*;
+import com.medicine.medicine_back.repository.resultSet.GetHelpfulListResultSet;
 import com.medicine.medicine_back.repository.resultSet.GetReviewResultSet;
 import com.medicine.medicine_back.service.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +26,7 @@ public class ReviewServiceImplement implements ReviewService {
     private final UserRepository userRespository;
     private final ReviewRepository reviewRepository;
     private final ReviewGetRepository reviewGetRepository;
+    private final HelpfulRepository favoriteRepository;
     private final ImageRepository imageRepository;
     private final RestTemplate restTemplate;
 
@@ -67,6 +67,7 @@ public class ReviewServiceImplement implements ReviewService {
         return GetReviewListResponseDto.success(resultSet, imageEntities);
     }
 
+    //리뷰 불러오기
     @Override
     public ResponseEntity<? super GetReviewResponseDto> getReview(Integer reviewNumber) {
         GetReviewResultSet resultSet = null;
@@ -84,17 +85,33 @@ public class ReviewServiceImplement implements ReviewService {
         return GetReviewResponseDto.success(resultSet, imageEntities);
     }
 
+    //도움돼요 리스트 불러오기
+    @Override
+    public ResponseEntity<? super GetHelpfulListResponseDto> getHelpfulList(Integer reviewNumber) {
+
+        List<GetHelpfulListResultSet> resultSets = new ArrayList<>();
+
+        try {
+            boolean existedReview = reviewRepository.existsByReviewNumber(reviewNumber);
+            if (!existedReview) return GetHelpfulListResponseDto.noExistReview();
+
+            resultSets = favoriteRepository.getHelpfulList(reviewNumber);
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetHelpfulListResponseDto.success(resultSets);
+    }
+
     //리뷰 작성하기
     @Override
     public ResponseEntity<? super PostReviewResponseDto> postReview(PostReviewRequestDto dto, String ITEM_SEQ, String userId) {
         try {
-            // 외부 API를 호출하여 ITEM_SEQ 값을 가져온다
-//            String itemSeq = fetchItemSeq(ITEM_SEQ);
 
             boolean existedEmail = userRespository.existsByUserId(userId);
             if(!existedEmail) return PostReviewResponseDto.noExistUser();
 
-            // 가져온 ITEM_SEQ 값을 사용하여 ReviewEntity 객체를 생성한다
             ReviewEntity reviewEntity = new ReviewEntity(dto, ITEM_SEQ, userId);
 
             // ReviewEntity를 저장한다
@@ -110,11 +127,7 @@ public class ReviewServiceImplement implements ReviewService {
                 imageEntities.add(imageEntity);
             }
             imageRepository.saveAll(imageEntities);
-            // 응답을 생성하여 반환한다
-//            return ResponseEntity.ok(new PostReviewResponseDto());
         } catch (Exception exception) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new PostReviewResponseDto());
             exception.printStackTrace();
             return ResponseDto.databaseError();
         }
@@ -179,39 +192,31 @@ public class ReviewServiceImplement implements ReviewService {
         return PatchReviewResponseDto.success();
     }
 
-    //타임아웃
-//    private RestTemplate restTemplate() {
-//        SimpleClientHttpRequestFactory clientHttpRequestFactory = new SimpleClientHttpRequestFactory();
-//        clientHttpRequestFactory.setConnectTimeout(30000);
-//        clientHttpRequestFactory.setReadTimeout(90000);
-//        return new RestTemplate(clientHttpRequestFactory);
-//    }
+    //도움돼요 기능
+    @Override
+    public ResponseEntity<? super PutHelpfulResponseDto> putFavorite(Integer reviewNumber, String userId) {
+        try {
+            boolean existedUser = userRespository.existsByUserId(userId);
+            if (!existedUser) return PutHelpfulResponseDto.noExistUser();
 
-    //외부 api 불러와서 itemSeq값 가져오기
-//    private String fetchItemSeq(String ITEM_SEQ) {
-//        try {
-//            RestTemplate restTemplate = restTemplate();
-//            String fullUrl = apiUrl + "?serviceKey=" + apiKey + "&type=json&item_seq=" + ITEM_SEQ + "&img_regist_ts=&pageNo=1&numOfRows=16&edi_code=";
-//            System.out.println("API 호출 URL: " + fullUrl);
-//
-//            String responseData = restTemplate.getForObject(fullUrl, String.class);
-//
-//            // Jackson ObjectMapper 객체 생성
-//            ObjectMapper objectMapper = new ObjectMapper();
-//
-//            // 응답 데이터를 JSON 형식으로 파싱하여 JsonNode 객체로 변환
-//            JsonNode rootNode = objectMapper.readTree(responseData);
-//
-//            // JSON 데이터에서 필요한 정보를 추출하여 변수에 저장
-//            String itemSeq = rootNode.path("body").path("items").get(0).path("ITEM_SEQ").asText();
-//            System.out.println("추출된 itemSeq값: " + itemSeq);
-//
-//            // 추출한 정보 반환
-//            return itemSeq;
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            throw new RuntimeException("Failed to fetch ITEM_SEQ from external API");
-//        }
-//    }
+            ReviewEntity reviewEntity = reviewRepository.findByReviewNumber(reviewNumber);
+            if (reviewEntity == null) return PutHelpfulResponseDto.noExistReview();
+
+            HelpfulEntity favoriteEntity = favoriteRepository.findByReviewNumberAndUserId(reviewNumber, userId);
+            if (favoriteEntity == null) {
+                favoriteEntity = new HelpfulEntity(userId, reviewNumber);
+                favoriteRepository.save(favoriteEntity);
+                reviewEntity.increaseFavoriteCount();
+            }
+            else {
+                favoriteRepository.delete(favoriteEntity);
+                reviewEntity.decreaseFavoriteCount();
+            }
+            reviewRepository.save(reviewEntity);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return PutHelpfulResponseDto.success();
+    }
 }

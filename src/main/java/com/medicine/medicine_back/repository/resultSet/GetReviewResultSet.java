@@ -7,4 +7,5 @@ public interface GetReviewResultSet{
     String getContent();
     String getWriteDatetime();
     Integer getStarRating();
+    Integer gethelpfulCount();
 }

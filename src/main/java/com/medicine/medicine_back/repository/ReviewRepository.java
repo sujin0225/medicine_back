@@ -1,5 +1,6 @@
 package com.medicine.medicine_back.repository;
 
+import com.medicine.medicine_back.dto.response.ResponseDto;
 import com.medicine.medicine_back.entity.ReviewEntity;
 //import com.medicine.medicine_back.repository.resultSet.GetReviewResultSet;
 import com.medicine.medicine_back.repository.resultSet.GetReviewResultSet;
@@ -13,8 +14,8 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends JpaRepository<ReviewEntity, String> {
     boolean existsByItemSeq(String ITEM_SEQ);
+    boolean existsByReviewNumber(Integer reviewNumber);
     ReviewEntity findByReviewNumber(Integer reviewNumber);
-//    List<ReviewEntity> findByItemSeq(String ITEM_SEQ);
 
     @Query(
             value =
@@ -33,10 +34,6 @@ public interface ReviewRepository extends JpaRepository<ReviewEntity, String> {
                             "ORDER BY write_datetime DESC",
             nativeQuery = true
     )
-//    List<ReviewEntity> getReview(@Param("itemSeq") String itemSeq);
     List<GetReviewResultSet> getReviewList(@Param("itemSeq") String itemSeq);
-
-//    GetReviewResultSet getReview(Integer reviewNumber);
-//    GetReviewResultSet getReview(@Param("reviewNumber") Integer reviewNumber);
 }
 

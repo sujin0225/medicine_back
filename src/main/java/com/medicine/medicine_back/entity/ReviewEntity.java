@@ -2,6 +2,7 @@ package com.medicine.medicine_back.entity;
 
 import com.medicine.medicine_back.dto.request.review.PatchReviewRequestDto;
 import com.medicine.medicine_back.dto.request.review.PostReviewRequestDto;
+import com.medicine.medicine_back.dto.response.ResponseDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,7 +28,7 @@ public class ReviewEntity {
     private String userId;
     private String content;
     private String writeDatetime;
-//    private int helpfulCount;
+    private int helpfulCount;
     private int starRating;
 
     public ReviewEntity(PostReviewRequestDto dto, String ITEM_SEQ, String userId) {
@@ -39,17 +40,20 @@ public class ReviewEntity {
         this.userId = userId;
         this.content = dto.getContent();
         this.starRating = dto.getStarRating();
-//        this.helpfulCount = dto.getHelpfulCount();
+        this.helpfulCount = 0;
         this.writeDatetime = writeDatetime;
     }
 
     public void patchReview(PatchReviewRequestDto dto) {
-        Date now = Date.from(Instant.now());
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String writeDatetime = simpleDateFormat.format(now);
-
         this.content = dto.getContent();
         this.starRating = dto.getStarRating();
-        this.writeDatetime = writeDatetime;
+    }
+
+    public void increaseFavoriteCount() {
+        this.helpfulCount++;
+    }
+
+    public void decreaseFavoriteCount() {
+        this.helpfulCount--;
     }
 }

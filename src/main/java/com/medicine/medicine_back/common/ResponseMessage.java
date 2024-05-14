@@ -11,4 +11,5 @@ public interface ResponseMessage {
     String NOT_EXISTED_MEDICINE = "존재하지 않는 의약품";
     String NOT_EXISTED_USER = "존재하지 않는 유저";
     String NO_PERMISSION = "권한 없음";
+    String NOT_EXISTED_REVIEW = "존재하지 않는 리뷰";
 }

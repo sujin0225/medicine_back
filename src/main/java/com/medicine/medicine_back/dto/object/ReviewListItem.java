@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
             this.writeDatetime = resultSet.getWriteDatetime();
             this.starRating = resultSet.getStarRating();
             this.starRating = resultSet.getStarRating();
+            this.helpfulCount = resultSet.gethelpfulCount();
         }
 
         public static List<ReviewListItem> copyList(List<GetReviewResultSet> resultSets, List<ImageEntity> imageEntities) {
