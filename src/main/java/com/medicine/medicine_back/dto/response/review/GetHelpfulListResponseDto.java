@@ -14,11 +14,11 @@ import java.util.List;
 @Getter
 public class GetHelpfulListResponseDto extends ResponseDto {
 
-    private List<HelpfulListItem> favoriteList;
+    private List<HelpfulListItem> HelpfulList;
 
     private GetHelpfulListResponseDto(List<GetHelpfulListResultSet> resultSets) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
-        this.favoriteList = HelpfulListItem.copyList(resultSets);
+        this.HelpfulList = HelpfulListItem.copyList(resultSets);
     }
 
     //성공

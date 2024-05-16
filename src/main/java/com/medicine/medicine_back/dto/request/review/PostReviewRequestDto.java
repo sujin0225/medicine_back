@@ -19,6 +19,4 @@ public class PostReviewRequestDto {
     private String content;
     @NotNull
     private List<String> reviewImageList;
-//    @NotNull
-//    private Integer helpfulCount;
 }
