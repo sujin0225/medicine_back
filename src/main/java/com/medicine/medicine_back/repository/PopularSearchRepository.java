@@ -17,7 +17,7 @@ public interface PopularSearchRepository extends JpaRepository<PopularSearchesEn
                             "FROM popular_searches " +
                             "GROUP BY search_word " +
                             "ORDER BY count DESC " +
-                            "LIMIT 15 ",
+                            "LIMIT 10 ",
             nativeQuery = true
     )
     List<GetPopularListResultSet> getPopularList();

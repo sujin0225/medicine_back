@@ -50,7 +50,7 @@ public class WebSecurityConfig {
                 )
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/", "/auth/*", "/search/**","/medicine/**", "/review/**", "file/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/user/*").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/user/*", "/medicine-stores/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
