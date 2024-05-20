@@ -1,6 +1,7 @@
 package com.medicine.medicine_back.service.implement;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.medicine.medicine_back.common.CoordinateConverter;
 import com.medicine.medicine_back.dto.response.ResponseDto;
 import com.medicine.medicine_back.dto.response.medicineStore.MedicineStoreResponseDto;
 import com.medicine.medicine_back.entity.MedicineStoreEntity;
@@ -67,6 +68,7 @@ public class MedicineStoreServiceImplement implements MedicineStoreService {
     private List<MedicineStoreEntity> parsePharmacies(String body){
         ObjectMapper objectMapper = new ObjectMapper();
         List<MedicineStoreEntity> pharmacies = new ArrayList<>();
+        CoordinateConverter coordinateConverter = new CoordinateConverter();
 
         try {
             // JSON 트리를 읽어들임
@@ -81,6 +83,18 @@ public class MedicineStoreServiceImplement implements MedicineStoreService {
             // "row" 배열을 순회하며 영업 중인 약국만 필터링
             for (JsonNode row : rowsNode) {
                 MedicineStoreEntity pharmacy = objectMapper.treeToValue(row, MedicineStoreEntity.class);
+
+                String xStr = pharmacy.getX();
+                String yStr = pharmacy.getY();
+
+                // xStr과 yStr이 null이 아니고 비어있지 않은 경우에만 convertTMToWGS84 메소드를 호출
+                if (xStr != null && !xStr.isEmpty() && yStr != null && !yStr.isEmpty()) {
+                    double[] wgs84 = coordinateConverter.convertTMToWGS84(xStr, yStr);
+                    System.out.println("Converted latitude: " + wgs84[0] + ", longitude: " + wgs84[1]);
+                    pharmacy.setX(String.valueOf(wgs84[0]));
+                    pharmacy.setY(String.valueOf(wgs84[1]));
+                }
+
                 if ("영업중".equals(pharmacy.getDTLSTATENM())) {
                     pharmacies.add(pharmacy);
                 }
