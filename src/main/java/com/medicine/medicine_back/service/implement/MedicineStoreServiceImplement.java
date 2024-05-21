@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.Comparator;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +25,7 @@ public class MedicineStoreServiceImplement implements MedicineStoreService {
     @Value("${medicine.store.api.key}")
     private String apiKey;
 
-    //상비의약품 API 호출
+    //상비의약품 API 호출 및 데이터 DB저장
     public ResponseEntity<? super MedicineStoreResponseDto> getMedicineStoreAPI(){
         final int MAX_RECORDS_PER_REQUEST = 1000;
         int start = 1;
@@ -62,6 +64,16 @@ public class MedicineStoreServiceImplement implements MedicineStoreService {
             return ResponseDto.databaseError();
         }
         return MedicineStoreResponseDto.success();
+    }
+
+    //사용자 위치 주변 상비 의약품 판매처
+    @Override
+    public List<MedicineStoreEntity> findClosestStores(double X, double Y) {
+        // 위도(Y)와 경도(X)의 유효성 검사
+        if (Y < -90 || Y > 90 || X < -180 || X > 180) {
+            throw new IllegalArgumentException("위도는 -90과 90 사이, 경도는 -180과 180 사이의 값이어야 합니다.");
+        }
+        return medicineStoreRepository.findClosest(X, Y);
     }
 
     //외부 API 응답 파싱

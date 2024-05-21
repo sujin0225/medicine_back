@@ -49,8 +49,8 @@ public class WebSecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/auth/*", "/search/**","/medicine/**", "/review/**", "file/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/user/*", "/medicine-stores/**").permitAll()
+                        .requestMatchers("/", "/auth/*", "/search/**","/medicine/**", "/review/**", "file/**", "/medicine-stores/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/user/*").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
