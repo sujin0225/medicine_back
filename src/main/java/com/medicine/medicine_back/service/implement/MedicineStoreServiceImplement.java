@@ -14,9 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.Comparator;
-
 @Service
 @RequiredArgsConstructor
 public class MedicineStoreServiceImplement implements MedicineStoreService {
@@ -25,7 +22,7 @@ public class MedicineStoreServiceImplement implements MedicineStoreService {
     @Value("${medicine.store.api.key}")
     private String apiKey;
 
-    //상비의약품 API 호출 및 데이터 DB저장
+    //상비의약품 API 호출 및 데이터 DB 저장
     public ResponseEntity<? super MedicineStoreResponseDto> getMedicineStoreAPI(){
         final int MAX_RECORDS_PER_REQUEST = 1000;
         int start = 1;
