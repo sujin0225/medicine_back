@@ -3,15 +3,19 @@ package com.medicine.medicine_back.service.implement;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medicine.medicine_back.dto.response.ResponseDto;
+import com.medicine.medicine_back.dto.response.medicine.GetMedicineResponseDto;
 import com.medicine.medicine_back.dto.response.medicine.MedicineResponseDto;
 import com.medicine.medicine_back.entity.MedicineEntity;
 import com.medicine.medicine_back.repository.MedicineRepository;
+import com.medicine.medicine_back.repository.resultSet.GetMedicineResultSet;
 import com.medicine.medicine_back.service.MedicineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,16 +38,34 @@ public class MedicineServiceImplement implements MedicineService {
             int totalRecords = 0;
 
             while (!isLastPage) {
-                String originalString = apiKey;
-                System.out.println(apiKey);
-                String encodedString = URLEncoder.encode(originalString, "UTF-8");
-                System.out.println("Encoded URL: " + encodedString);
+//                String originalString = apiKey;
+//                System.out.println(apiKey);
+//                String encodedString = URLEncoder.encode(originalString, "UTF-8");
+//                System.out.println("Encoded URL: " + encodedString);
+//
+//                final String baseUrl = "http://apis.data.go.kr/1471000/MdcinGrnIdntfcInfoService01/getMdcinGrnIdntfcInfoList01?" + apiKey + "&type=json&item_name=&entp_name=&item_seq=&img_regist_ts=";
+//                String url = baseUrl + "&pageNo=" + pageNo + "&numOfRows=300&edi_code=";
+//                System.out.println("요청 URL: " + url);
+//                RestTemplate restTemplate = new RestTemplate();
+//                ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
-                final String baseUrl = "http://apis.data.go.kr/1471000/MdcinGrnIdntfcInfoService01/getMdcinGrnIdntfcInfoList01?" + encodedString + "&type=json&item_name=&entp_name=&item_seq=&img_regist_ts=";
-                String url = baseUrl + "&pageNo=" + pageNo + "&numOfRows=300&edi_code=";
-                System.out.println("요청 URL: " + url);
+                UriComponentsBuilder builder = UriComponentsBuilder
+                        .fromHttpUrl("http://apis.data.go.kr/1471000/MdcinGrnIdntfcInfoService01/getMdcinGrnIdntfcInfoList01")
+                        .queryParam("serviceKey", apiKey)
+                        .queryParam("type", "json")
+                        .queryParam("item_name", "")
+                        .queryParam("entp_name", "")
+                        .queryParam("item_seq", "")
+                        .queryParam("img_regist_ts", "")
+                        .queryParam("pageNo", pageNo)
+                        .queryParam("numOfRows", "300")
+                        .queryParam("edi_code", "");
+                String url = builder.toUriString();
+                System.out.println(url);
+
                 RestTemplate restTemplate = new RestTemplate();
                 ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
 
                 if (totalRecords == 0) {
                     totalRecords = parseTotalRecords(response.getBody());
@@ -58,7 +80,7 @@ public class MedicineServiceImplement implements MedicineService {
                 medicineRepository.saveAll(resultSets);
 
                 // 마지막 페이지 확인
-                if (resultSets.size() < 300 || pageNo * 300 >= totalRecords) {
+                if (resultSets.size() < 300) {
                     isLastPage = true;
                 } else {
                     pageNo++; // 페이지 번호 증가
@@ -69,6 +91,18 @@ public class MedicineServiceImplement implements MedicineService {
             return ResponseDto.databaseError();
         }
         return MedicineResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super GetMedicineResponseDto> getMedicine(String ITEM_SEQ) {
+        GetMedicineResultSet resultSet = null;
+
+        try {
+            resultSet = medicineRepository.getMedicine(ITEM_SEQ);
+        } catch (Exception exception) {
+            return ResponseDto.databaseError();
+        }
+        return GetMedicineResponseDto.success(resultSet);
     }
 
     //외부 API 응답 파싱

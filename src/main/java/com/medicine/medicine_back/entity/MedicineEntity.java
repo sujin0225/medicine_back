@@ -35,4 +35,6 @@ public class MedicineEntity {
     private String ENTP_NAME;
     @JsonProperty("ETC_OTC_NAME")
     private String ETC_OTC_NAME;
+    @JsonProperty("ITEM_IMAGE")
+    private String ITEM_IMAGE;
 }

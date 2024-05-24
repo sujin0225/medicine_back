@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 
 @Getter
 public class MedicineResponseDto extends ResponseDto {
+
     public MedicineResponseDto() {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
     }
