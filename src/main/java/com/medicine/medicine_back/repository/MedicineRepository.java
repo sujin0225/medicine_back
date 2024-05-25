@@ -11,7 +11,7 @@ public interface MedicineRepository extends JpaRepository<MedicineEntity, String
     @Query(
             value =
                     "SELECT ITEM_SEQ, ITEM_NAME, FORM_CODE_NAME, CLASS_NO, " +
-                            "CLASS_NAME, ENTP_NAME, ETC_OTC_NAME, ITEM_IMAGE " +
+                            "CLASS_NAME, ENTP_NAME, ETC_OTC_NAME, ITEM_IMAGE, ITEM_ENG_NAME " +
                             "FROM medicines " +
                             "WHERE ITEM_SEQ = :ITEM_SEQ",
             nativeQuery = true

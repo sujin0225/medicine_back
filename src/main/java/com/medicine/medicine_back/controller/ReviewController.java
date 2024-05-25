@@ -3,6 +3,7 @@ package com.medicine.medicine_back.controller;
 import com.medicine.medicine_back.dto.request.review.PatchReviewRequestDto;
 import com.medicine.medicine_back.dto.request.review.PostReviewRequestDto;
 //import com.medicine.medicine_back.dto.response.review.GetReviewResponseDto;
+import com.medicine.medicine_back.dto.request.review.PutFavoriteRequestDto;
 import com.medicine.medicine_back.dto.response.review.*;
 import com.medicine.medicine_back.service.ReviewService;
 import jakarta.validation.Valid;
@@ -78,11 +79,31 @@ public class ReviewController {
 
     //도움돼요 기능
     @PutMapping("/helpful/{reviewNumber}")
-    public ResponseEntity<? super PutHelpfulResponseDto> putFavorite(
+    public ResponseEntity<? super PutHelpfulResponseDto> putHelpful(
             @PathVariable("reviewNumber") Integer reviewNumber,
             @AuthenticationPrincipal String userId
     ) {
-        ResponseEntity<? super PutHelpfulResponseDto> response = reviewService.putFavorite(reviewNumber, userId);
+        ResponseEntity<? super PutHelpfulResponseDto> response = reviewService.putHelpful(reviewNumber, userId);
+        return response;
+    }
+
+    //관심 의약품 저장
+    @PutMapping("/favorite/{itemSeq}")
+    public ResponseEntity<? super PutFavoriteResponseDto> putFavorite(
+            @RequestBody PutFavoriteRequestDto requestBody,
+            @PathVariable("itemSeq") String itemSeq,
+            @AuthenticationPrincipal String userId
+    ){
+        ResponseEntity<? super PutFavoriteResponseDto> response = reviewService.putFavorite(requestBody, itemSeq, userId);
+        return response;
+    }
+
+    //관심 의약품
+    @GetMapping("/favorite")
+    public ResponseEntity<? super GetFavoriteResponseDto> getFavorite(
+            @AuthenticationPrincipal String userId
+    ){
+        ResponseEntity<? super GetFavoriteResponseDto> response = reviewService.getFavorite(userId);
         return response;
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 public class GetMedicineResponseDto extends ResponseDto {
     private String ITEM_SEQ;
     private String ITEM_NAME;
+    private String ITEM_ENG_NAME;
     private String FORM_CODE_NAME;
     private String CLASS_NO;
     private String CLASS_NAME;
@@ -23,6 +24,7 @@ public class GetMedicineResponseDto extends ResponseDto {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
         this.ITEM_SEQ = resultSet.getITEM_SEQ();
         this.ITEM_NAME = resultSet.getITEM_NAME();
+        this.ITEM_ENG_NAME = resultSet.getITEM_ENG_NAME();
         this.FORM_CODE_NAME = resultSet.getFORM_CODE_NAME();
         this.CLASS_NO = resultSet.getCLASS_NO();
         this.CLASS_NAME = resultSet.getCLASS_NAME();

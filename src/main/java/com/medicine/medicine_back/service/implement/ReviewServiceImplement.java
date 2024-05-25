@@ -1,12 +1,15 @@
 package com.medicine.medicine_back.service.implement;
 import com.medicine.medicine_back.dto.request.review.PatchReviewRequestDto;
 import com.medicine.medicine_back.dto.request.review.PostReviewRequestDto;
+import com.medicine.medicine_back.dto.request.review.PutFavoriteRequestDto;
 import com.medicine.medicine_back.dto.response.ResponseDto;
 import com.medicine.medicine_back.dto.response.review.*;
+import com.medicine.medicine_back.entity.FavoriteEntity;
 import com.medicine.medicine_back.entity.HelpfulEntity;
 import com.medicine.medicine_back.entity.ImageEntity;
 import com.medicine.medicine_back.entity.ReviewEntity;
 import com.medicine.medicine_back.repository.*;
+import com.medicine.medicine_back.repository.resultSet.GetFavoriteResultSet;
 import com.medicine.medicine_back.repository.resultSet.GetHelpfulListResultSet;
 import com.medicine.medicine_back.repository.resultSet.GetReviewResultSet;
 import com.medicine.medicine_back.service.ReviewService;
@@ -26,8 +29,9 @@ public class ReviewServiceImplement implements ReviewService {
     private final UserRepository userRespository;
     private final ReviewRepository reviewRepository;
     private final ReviewGetRepository reviewGetRepository;
-    private final HelpfulRepository favoriteRepository;
+    private final HelpfulRepository helpfulRepository;
     private final ImageRepository imageRepository;
+    private final FavoriteRepository favoriteRepository;
     private final RestTemplate restTemplate;
 
     @Value("${medicine.api.key}")
@@ -95,7 +99,7 @@ public class ReviewServiceImplement implements ReviewService {
             boolean existedReview = reviewRepository.existsByReviewNumber(reviewNumber);
             if (!existedReview) return GetHelpfulListResponseDto.noExistReview();
 
-            resultSets = favoriteRepository.getHelpfulList(reviewNumber);
+            resultSets = helpfulRepository.getHelpfulList(reviewNumber);
 
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -194,7 +198,7 @@ public class ReviewServiceImplement implements ReviewService {
 
     //도움돼요 기능
     @Override
-    public ResponseEntity<? super PutHelpfulResponseDto> putFavorite(Integer reviewNumber, String userId) {
+    public ResponseEntity<? super PutHelpfulResponseDto> putHelpful(Integer reviewNumber, String userId) {
         try {
             boolean existedUser = userRespository.existsByUserId(userId);
             if (!existedUser) return PutHelpfulResponseDto.noExistUser();
@@ -202,14 +206,14 @@ public class ReviewServiceImplement implements ReviewService {
             ReviewEntity reviewEntity = reviewRepository.findByReviewNumber(reviewNumber);
             if (reviewEntity == null) return PutHelpfulResponseDto.noExistReview();
 
-            HelpfulEntity favoriteEntity = favoriteRepository.findByReviewNumberAndUserId(reviewNumber, userId);
-            if (favoriteEntity == null) {
-                favoriteEntity = new HelpfulEntity(userId, reviewNumber);
-                favoriteRepository.save(favoriteEntity);
+            HelpfulEntity helpfulEntity = helpfulRepository.findByReviewNumberAndUserId(reviewNumber, userId);
+            if (helpfulEntity == null) {
+                helpfulEntity = new HelpfulEntity(userId, reviewNumber);
+                helpfulRepository.save(helpfulEntity);
                 reviewEntity.increaseFavoriteCount();
             }
             else {
-                favoriteRepository.delete(favoriteEntity);
+                helpfulRepository.delete(helpfulEntity);
                 reviewEntity.decreaseFavoriteCount();
             }
             reviewRepository.save(reviewEntity);
@@ -218,5 +222,41 @@ public class ReviewServiceImplement implements ReviewService {
             return ResponseDto.databaseError();
         }
         return PutHelpfulResponseDto.success();
+    }
+
+    //관심 의약품
+    @Override
+    public ResponseEntity<? super GetFavoriteResponseDto> getFavorite(String userId) {
+        List<GetFavoriteResultSet> resultSets = new ArrayList<>();
+
+        try {
+            resultSets = favoriteRepository.getFavorite(userId);
+            System.out.println(resultSets);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetFavoriteResponseDto.success(resultSets);
+    }
+
+    //관심 의약품 저장
+    @Override
+    public ResponseEntity<? super PutFavoriteResponseDto> putFavorite(PutFavoriteRequestDto dto, String itemSeq, String userId) {
+        try {
+            boolean existedUser = userRespository.existsByUserId(userId);
+            if (!existedUser) return PutFavoriteResponseDto.noExistUser();
+
+            FavoriteEntity favoriteEntity = favoriteRepository.findByItemSeqAndUserId(itemSeq, userId);
+            if (favoriteEntity == null) {
+                favoriteEntity = new FavoriteEntity(dto, itemSeq, userId);
+                favoriteRepository.save(favoriteEntity);
+            } else {
+                favoriteRepository.delete(favoriteEntity);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return PutFavoriteResponseDto.success();
     }
 }

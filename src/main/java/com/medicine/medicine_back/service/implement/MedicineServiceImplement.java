@@ -38,33 +38,33 @@ public class MedicineServiceImplement implements MedicineService {
             int totalRecords = 0;
 
             while (!isLastPage) {
-//                String originalString = apiKey;
-//                System.out.println(apiKey);
-//                String encodedString = URLEncoder.encode(originalString, "UTF-8");
-//                System.out.println("Encoded URL: " + encodedString);
-//
-//                final String baseUrl = "http://apis.data.go.kr/1471000/MdcinGrnIdntfcInfoService01/getMdcinGrnIdntfcInfoList01?" + apiKey + "&type=json&item_name=&entp_name=&item_seq=&img_regist_ts=";
-//                String url = baseUrl + "&pageNo=" + pageNo + "&numOfRows=300&edi_code=";
-//                System.out.println("요청 URL: " + url);
-//                RestTemplate restTemplate = new RestTemplate();
-//                ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+                String originalString = apiKey;
+                System.out.println(apiKey);
+                String encodedString = URLEncoder.encode(originalString, "UTF-8");
+                System.out.println("Encoded URL: " + encodedString);
 
-                UriComponentsBuilder builder = UriComponentsBuilder
-                        .fromHttpUrl("http://apis.data.go.kr/1471000/MdcinGrnIdntfcInfoService01/getMdcinGrnIdntfcInfoList01")
-                        .queryParam("serviceKey", apiKey)
-                        .queryParam("type", "json")
-                        .queryParam("item_name", "")
-                        .queryParam("entp_name", "")
-                        .queryParam("item_seq", "")
-                        .queryParam("img_regist_ts", "")
-                        .queryParam("pageNo", pageNo)
-                        .queryParam("numOfRows", "300")
-                        .queryParam("edi_code", "");
-                String url = builder.toUriString();
-                System.out.println(url);
-
+                final String baseUrl = "http://apis.data.go.kr/1471000/MdcinGrnIdntfcInfoService01/getMdcinGrnIdntfcInfoList01?" + apiKey + "&type=json&item_name=&entp_name=&item_seq=&img_regist_ts=";
+                String url = baseUrl + "&pageNo=" + pageNo + "&numOfRows=300&edi_code=";
+                System.out.println("요청 URL: " + url);
                 RestTemplate restTemplate = new RestTemplate();
                 ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
+//                UriComponentsBuilder builder = UriComponentsBuilder
+//                        .fromHttpUrl("http://apis.data.go.kr/1471000/MdcinGrnIdntfcInfoService01/getMdcinGrnIdntfcInfoList01")
+//                        .queryParam("serviceKey", apiKey)
+//                        .queryParam("type", "json")
+//                        .queryParam("item_name", "")
+//                        .queryParam("entp_name", "")
+//                        .queryParam("item_seq", "")
+//                        .queryParam("img_regist_ts", "")
+//                        .queryParam("pageNo", pageNo)
+//                        .queryParam("numOfRows", "300")
+//                        .queryParam("edi_code", "");
+//                String url = builder.toUriString();
+//                System.out.println(url);
+//
+//                RestTemplate restTemplate = new RestTemplate();
+//                ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
 
                 if (totalRecords == 0) {
