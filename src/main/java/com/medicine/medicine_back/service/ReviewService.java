@@ -16,4 +16,5 @@ public interface ReviewService {
     ResponseEntity<? super PutHelpfulResponseDto> putHelpful(Integer reviewNumber, String userId);
     ResponseEntity<? super GetFavoriteResponseDto> getFavorite(String userId);
     ResponseEntity<? super PutFavoriteResponseDto> putFavorite(PutFavoriteRequestDto dto, String itemSeq, String userId);
+    ResponseEntity<? super GetUserReviewListResponseDto> getUserReviewList(String UserId);
 }

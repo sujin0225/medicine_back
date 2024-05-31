@@ -14,6 +14,7 @@ import com.medicine.medicine_back.repository.resultSet.GetHelpfulListResultSet;
 import com.medicine.medicine_back.repository.resultSet.GetReviewResultSet;
 import com.medicine.medicine_back.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ public class ReviewServiceImplement implements ReviewService {
     private final HelpfulRepository helpfulRepository;
     private final ImageRepository imageRepository;
     private final FavoriteRepository favoriteRepository;
+    private final ReviewUserRepository reviewUserRepository;
     private final RestTemplate restTemplate;
 
     @Value("${medicine.api.key}")
@@ -224,7 +226,7 @@ public class ReviewServiceImplement implements ReviewService {
         return PutHelpfulResponseDto.success();
     }
 
-    //관심 의약품
+    //관심 의약품 리스트
     @Override
     public ResponseEntity<? super GetFavoriteResponseDto> getFavorite(String userId) {
         List<GetFavoriteResultSet> resultSets = new ArrayList<>();
@@ -258,5 +260,22 @@ public class ReviewServiceImplement implements ReviewService {
             return ResponseDto.databaseError();
         }
         return PutFavoriteResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super GetUserReviewListResponseDto> getUserReviewList(String UserId) {
+        List<GetReviewResultSet> resultSet = new ArrayList<>();
+        List<ImageEntity> imageEntities = new ArrayList<>();
+
+        try {
+            boolean existedUser = userRespository.existsByUserId(UserId);
+            if (!existedUser) return GetUserReviewListResponseDto.notExistReview();
+
+            resultSet = reviewUserRepository.findByUserId(UserId);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetUserReviewListResponseDto.success(resultSet, imageEntities);
     }
 }

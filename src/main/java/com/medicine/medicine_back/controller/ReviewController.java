@@ -98,12 +98,21 @@ public class ReviewController {
         return response;
     }
 
-    //관심 의약품
+    //관심 의약품 리스트
     @GetMapping("/favorite")
     public ResponseEntity<? super GetFavoriteResponseDto> getFavorite(
             @AuthenticationPrincipal String userId
     ){
         ResponseEntity<? super GetFavoriteResponseDto> response = reviewService.getFavorite(userId);
+        return response;
+    }
+
+    //나의 의약품 리뷰
+    @GetMapping("/myreview")
+    public ResponseEntity<? super GetUserReviewListResponseDto> getUserReviewList(
+            @AuthenticationPrincipal String userId
+    ){
+        ResponseEntity<? super GetUserReviewListResponseDto> response = reviewService.getUserReviewList(userId);
         return response;
     }
 }
