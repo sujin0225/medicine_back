@@ -262,6 +262,7 @@ public class ReviewServiceImplement implements ReviewService {
         return PutFavoriteResponseDto.success();
     }
 
+    //나의 리뷰 불러오기
     @Override
     public ResponseEntity<? super GetUserReviewListResponseDto> getUserReviewList(String UserId) {
         List<GetReviewResultSet> resultSet = new ArrayList<>();
@@ -272,6 +273,15 @@ public class ReviewServiceImplement implements ReviewService {
             if (!existedUser) return GetUserReviewListResponseDto.notExistReview();
 
             resultSet = reviewUserRepository.findByUserId(UserId);
+
+            // resultSet에서 reviewNumber를 추출하여 리스트 생성
+            List<Integer> reviewNumber = resultSet.stream()
+                    .map(GetReviewResultSet::getReviewNumber)
+                    .collect(Collectors.toList());
+
+            if (!reviewNumber.isEmpty()) {
+                imageEntities = imageRepository.findByReviewNumberIn(reviewNumber);
+            }
         } catch (Exception exception) {
             exception.printStackTrace();
             return ResponseDto.databaseError();

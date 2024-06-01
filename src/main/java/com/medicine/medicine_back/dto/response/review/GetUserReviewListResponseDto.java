@@ -5,7 +5,6 @@ import com.medicine.medicine_back.common.ResponseMessage;
 import com.medicine.medicine_back.dto.object.ReviewListItem;
 import com.medicine.medicine_back.dto.response.ResponseDto;
 import com.medicine.medicine_back.entity.ImageEntity;
-import com.medicine.medicine_back.entity.ReviewEntity;
 import com.medicine.medicine_back.repository.resultSet.GetReviewResultSet;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
