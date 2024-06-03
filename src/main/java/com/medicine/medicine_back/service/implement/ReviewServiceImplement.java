@@ -272,7 +272,7 @@ public class ReviewServiceImplement implements ReviewService {
             boolean existedUser = userRespository.existsByUserId(UserId);
             if (!existedUser) return GetUserReviewListResponseDto.notExistReview();
 
-            resultSet = reviewUserRepository.findByUserId(UserId);
+            resultSet = reviewUserRepository.findByUserIdOrderByWriteDatetimeDesc(UserId);
 
             // resultSet에서 reviewNumber를 추출하여 리스트 생성
             List<Integer> reviewNumber = resultSet.stream()

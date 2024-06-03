@@ -9,5 +9,6 @@ import java.util.List;
 
 @Repository
 public interface ReviewUserRepository extends JpaRepository<ReviewEntity, String> {
-    List<GetReviewResultSet> findByUserId(String UserId);
+//    List<GetReviewResultSet> findByUserId(String UserId);
+    List<GetReviewResultSet> findByUserIdOrderByWriteDatetimeDesc(String UserId);
 }
