@@ -19,7 +19,6 @@ public class UserEntity {
     private String password;
     private String email;
     private String type;
- 
 
     public UserEntity(SignUpRequestDto dto) {
         this.userId = dto.getId();
@@ -33,5 +32,9 @@ public class UserEntity {
         this.password = "Passw0rd!";
         this.email = email;
         this.type = type;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

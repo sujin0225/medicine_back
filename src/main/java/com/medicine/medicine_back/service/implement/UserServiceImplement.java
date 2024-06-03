@@ -1,8 +1,10 @@
 package com.medicine.medicine_back.service.implement;
 
+import com.medicine.medicine_back.dto.request.user.PatchPasswordRequestDto;
 import com.medicine.medicine_back.dto.response.ResponseDto;
 import com.medicine.medicine_back.dto.response.user.DeleteUserResponseDto;
 import com.medicine.medicine_back.dto.response.user.GetSignInUserResponseDto;
+import com.medicine.medicine_back.dto.response.user.PatchPasswordResponseDto;
 import com.medicine.medicine_back.entity.UserEntity;
 import com.medicine.medicine_back.repository.UserRepository;
 import com.medicine.medicine_back.service.UserService;
@@ -12,12 +14,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImplement implements UserService {
     private final UserRepository userRepository;
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     //유저
     @Override
@@ -78,5 +83,26 @@ public class UserServiceImplement implements UserService {
             return ResponseDto.databaseError();
         }
         return DeleteUserResponseDto.success(userEntity);
+    }
+
+    //비밀번호 수정
+    @Override
+    public ResponseEntity<? super PatchPasswordResponseDto> patchUserpassword(PatchPasswordRequestDto dto, String userId) {
+        try {
+            UserEntity userEntity = userRepository.findByUserId(userId);
+            if (userEntity == null) PatchPasswordResponseDto.noExistUser();
+
+            String password = dto.getPassword();
+            String encodedPassword = passwordEncoder.encode(password);
+            dto.setPassword(encodedPassword);
+
+            userEntity.setPassword(encodedPassword);
+
+            userRepository.save(userEntity);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return PatchPasswordResponseDto.success();
     }
 }

@@ -1,9 +1,13 @@
 package com.medicine.medicine_back.controller;
 
-import com.medicine.medicine_back.dto.response.review.DeleteReviewResponseDto;
+import com.medicine.medicine_back.dto.request.review.PatchReviewRequestDto;
+import com.medicine.medicine_back.dto.request.user.PatchPasswordRequestDto;
+import com.medicine.medicine_back.dto.response.review.PatchReviewResponseDto;
 import com.medicine.medicine_back.dto.response.user.DeleteUserResponseDto;
 import com.medicine.medicine_back.dto.response.user.GetSignInUserResponseDto;
+import com.medicine.medicine_back.dto.response.user.PatchPasswordResponseDto;
 import com.medicine.medicine_back.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,6 +34,16 @@ public class UserController {
             @AuthenticationPrincipal String userId
     ){
         ResponseEntity<? super DeleteUserResponseDto> response = userService.deleteUser(userId);
+        return response;
+    }
+
+    //비밀번호 변경
+    @PatchMapping("/patchpassword")
+    public ResponseEntity<? super PatchPasswordResponseDto> patchUserpassword(
+            @RequestBody @Valid PatchPasswordRequestDto requestBody,
+            @AuthenticationPrincipal String userId
+    ) {
+        ResponseEntity<? super PatchPasswordResponseDto> response = userService.patchUserpassword(requestBody, userId);
         return response;
     }
 }
