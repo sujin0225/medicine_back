@@ -2,8 +2,10 @@ package com.medicine.medicine_back.service.implement;
 
 import com.medicine.medicine_back.common.CertificationNumber;
 import com.medicine.medicine_back.dto.request.auth.*;
+import com.medicine.medicine_back.dto.request.user.PatchEmailRequestDto;
 import com.medicine.medicine_back.dto.response.ResponseDto;
 import com.medicine.medicine_back.dto.response.auth.*;
+import com.medicine.medicine_back.dto.response.user.PatchEmailResponseDto;
 import com.medicine.medicine_back.entity.CertificationEntity;
 import com.medicine.medicine_back.entity.UserEntity;
 import com.medicine.medicine_back.provider.EmailProvider;

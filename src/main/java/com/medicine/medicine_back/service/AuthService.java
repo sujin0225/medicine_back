@@ -1,7 +1,9 @@
 package com.medicine.medicine_back.service;
 
 import com.medicine.medicine_back.dto.request.auth.*;
+import com.medicine.medicine_back.dto.request.user.PatchEmailRequestDto;
 import com.medicine.medicine_back.dto.response.auth.*;
+import com.medicine.medicine_back.dto.response.user.PatchEmailResponseDto;
 import org.springframework.http.ResponseEntity;
 
 public interface AuthService {

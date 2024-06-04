@@ -1,6 +1,7 @@
 package com.medicine.medicine_back.entity;
 
 import com.medicine.medicine_back.dto.request.auth.SignUpRequestDto;
+import com.medicine.medicine_back.dto.request.user.PatchEmailRequestDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -36,5 +37,9 @@ public class UserEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

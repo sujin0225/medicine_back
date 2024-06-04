@@ -1,11 +1,11 @@
 package com.medicine.medicine_back.controller;
 
 import com.medicine.medicine_back.dto.request.review.PatchReviewRequestDto;
+import com.medicine.medicine_back.dto.request.user.PatchEmailRequestDto;
 import com.medicine.medicine_back.dto.request.user.PatchPasswordRequestDto;
+import com.medicine.medicine_back.dto.request.user.UpdateEmailCertificationRequestDto;
 import com.medicine.medicine_back.dto.response.review.PatchReviewResponseDto;
-import com.medicine.medicine_back.dto.response.user.DeleteUserResponseDto;
-import com.medicine.medicine_back.dto.response.user.GetSignInUserResponseDto;
-import com.medicine.medicine_back.dto.response.user.PatchPasswordResponseDto;
+import com.medicine.medicine_back.dto.response.user.*;
 import com.medicine.medicine_back.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +44,25 @@ public class UserController {
             @AuthenticationPrincipal String userId
     ) {
         ResponseEntity<? super PatchPasswordResponseDto> response = userService.patchUserpassword(requestBody, userId);
+        return response;
+    }
+
+    //이메일 변경
+    @PatchMapping("/patchEmail")
+    public ResponseEntity<? super PatchEmailResponseDto> patchUserEmail(
+            @RequestBody PatchEmailRequestDto requestBody,
+            @AuthenticationPrincipal String userId
+    ) {
+        ResponseEntity<? super PatchEmailResponseDto> response = userService.patchUserEmail(requestBody, userId);
+        return response;
+    }
+
+    //이메일 수정시 이메일 인증
+    @PostMapping("/update-check-certification")
+    public ResponseEntity<? super UpdateEmailCertificationResponseDto> checkCertification (
+            @RequestBody @Valid UpdateEmailCertificationRequestDto requestBody
+            ){
+        ResponseEntity<? super UpdateEmailCertificationResponseDto> response = userService.checkCertification(requestBody);
         return response;
     }
 }
