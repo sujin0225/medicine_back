@@ -49,7 +49,7 @@ public class WebSecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/", "/auth/*", "/search/**","/medicine/**", "/review/**", "file/**", "/medicine-stores/**", "/user/**").permitAll()
+                        .requestMatchers("/", "/auth/*", "/search/**","/medicine/**", "/review/**", "file/**", "/medicine-stores/**", "/user/**", "/medicinePermission/**").permitAll()
 //                        .requestMatchers(HttpMethod.GET, "/user/**").permitAll()
                         .anyRequest().authenticated()
                 )

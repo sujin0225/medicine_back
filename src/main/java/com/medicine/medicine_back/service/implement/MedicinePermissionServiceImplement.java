@@ -3,12 +3,12 @@ package com.medicine.medicine_back.service.implement;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medicine.medicine_back.dto.response.ResponseDto;
-import com.medicine.medicine_back.dto.response.medicine.GetMedicineResponseDto;
-import com.medicine.medicine_back.dto.response.medicine.MedicineResponseDto;
+import com.medicine.medicine_back.dto.response.medicinePermission.GetMedicinePermissionResponseDto;
+import com.medicine.medicine_back.dto.response.medicinePermission.MedicinePermissionResponseDto;
 import com.medicine.medicine_back.entity.MedicineEntity;
-import com.medicine.medicine_back.repository.MedicineRepository;
-import com.medicine.medicine_back.repository.resultSet.GetMedicineResultSet;
-import com.medicine.medicine_back.service.MedicineService;
+import com.medicine.medicine_back.entity.MedicinePermissionEntity;
+import com.medicine.medicine_back.repository.MedicinePermissionRepository;
+import com.medicine.medicine_back.service.MedicinePermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -22,49 +22,45 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class MedicineServiceImplement implements MedicineService {
-    private final MedicineRepository medicineRepository;
+public class MedicinePermissionServiceImplement implements MedicinePermissionService {
+    private final MedicinePermissionRepository medicinePermissionRepository;
 
     @Value("${medicine.api.key}")
     private String apiKey;
 
-    //의약품 API 호출 및 데이터 DB 저장
+    //의약품 제품 허가정보 API 호출 및 데이터 DB 저장
     @Override
-    public ResponseEntity<? super MedicineResponseDto> getMedicineAPI() {
-
+    public ResponseEntity<? super MedicinePermissionResponseDto> getMedicinePermissionAPI() {
         int pageNo = 1;
         boolean isLastPage = false;
         try {
             int totalRecords = 0;
 
             while (!isLastPage) {
-                String originalString = apiKey;
-                System.out.println(apiKey);
-                String encodedString = URLEncoder.encode(originalString, "UTF-8");
-                System.out.println("Encoded URL: " + encodedString);
+//                String originalString = apiKey;
+//                System.out.println(apiKey);
+//                String encodedString = URLEncoder.encode(originalString, "UTF-8");
+//                System.out.println("Encoded URL: " + encodedString);
+//
+//                final String baseUrl = "https://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService05/getDrugPrdtPrmsnDtlInq04?servicekey=" + encodedString + "&type=json";
+//                String url = baseUrl + "&pageNo=" + pageNo + "&numOfRows=100";
+//                System.out.println("요청 URL: " + url);
+//                RestTemplate restTemplate = new RestTemplate();
+//                ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
-                final String baseUrl = "http://apis.data.go.kr/1471000/MdcinGrnIdntfcInfoService01/getMdcinGrnIdntfcInfoList01?" + apiKey + "&type=json&item_name=&entp_name=&item_seq=&img_regist_ts=";
-                String url = baseUrl + "&pageNo=" + pageNo + "&numOfRows=300&edi_code=";
-                System.out.println("요청 URL: " + url);
+
+                UriComponentsBuilder builder = UriComponentsBuilder
+                        .fromHttpUrl("https://apis.data.go.kr/1471000/DrugPrdtPrmsnInfoService05/getDrugPrdtPrmsnDtlInq04?")
+                        .queryParam("serviceKey", apiKey)
+                        .queryParam("type", "json")
+                        .queryParam("pageNo", pageNo)
+                        .queryParam("numOfRows", "100");
+                String url = builder.toUriString();
+                System.out.println(url);
+
                 RestTemplate restTemplate = new RestTemplate();
                 ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
-//                UriComponentsBuilder builder = UriComponentsBuilder
-//                        .fromHttpUrl("http://apis.data.go.kr/1471000/MdcinGrnIdntfcInfoService01/getMdcinGrnIdntfcInfoList01")
-//                        .queryParam("serviceKey", apiKey)
-//                        .queryParam("type", "json")
-//                        .queryParam("item_name", "")
-//                        .queryParam("entp_name", "")
-//                        .queryParam("item_seq", "")
-//                        .queryParam("img_regist_ts", "")
-//                        .queryParam("pageNo", pageNo)
-//                        .queryParam("numOfRows", "300")
-//                        .queryParam("edi_code", "");
-//                String url = builder.toUriString();
-//                System.out.println(url);
-//
-//                RestTemplate restTemplate = new RestTemplate();
-//                ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
 
                 if (totalRecords == 0) {
@@ -73,14 +69,14 @@ public class MedicineServiceImplement implements MedicineService {
 
                 // API 응답 파싱
                 String responseBody = response.getBody();
-                List<MedicineEntity> resultSets = parseMedicine(responseBody);
+                List<MedicinePermissionEntity> resultSets = parseMedicinePermission(responseBody);
                 System.out.println("결과 리스트: " + resultSets);
 
                 // 데이터베이스에 저장
-                medicineRepository.saveAll(resultSets);
+                medicinePermissionRepository.saveAll(resultSets);
 
                 // 마지막 페이지 확인
-                if (resultSets.size() < 300) {
+                if (resultSets.size() < 100) {
                     isLastPage = true;
                 } else {
                     pageNo++; // 페이지 번호 증가
@@ -90,26 +86,19 @@ public class MedicineServiceImplement implements MedicineService {
             exception.printStackTrace();
             return ResponseDto.databaseError();
         }
-        return MedicineResponseDto.success();
+        return MedicinePermissionResponseDto.success();
     }
 
-    //의약품 정보 불러오기
+    //의약품 제품 허가정보 불러오기
     @Override
-    public ResponseEntity<? super GetMedicineResponseDto> getMedicine(String ITEM_SEQ) {
-        GetMedicineResultSet resultSet = null;
-
-        try {
-            resultSet = medicineRepository.getMedicine(ITEM_SEQ);
-        } catch (Exception exception) {
-            return ResponseDto.databaseError();
-        }
-        return GetMedicineResponseDto.success(resultSet);
+    public ResponseEntity<? super GetMedicinePermissionResponseDto> getMedicinePermission(String ITEM_SEQ) {
+        return null;
     }
 
     //외부 API 응답 파싱
-    private List<MedicineEntity> parseMedicine(String body){
+    private List<MedicinePermissionEntity> parseMedicinePermission(String body){
         ObjectMapper objectMapper = new ObjectMapper();
-        List<MedicineEntity> Medicine = new ArrayList<>();
+        List<MedicinePermissionEntity> Medicine = new ArrayList<>();
 
         try {
             // JSON 트리를 읽어들임
@@ -123,7 +112,7 @@ public class MedicineServiceImplement implements MedicineService {
 
             // "items" 배열의 각 요소를 순회하면서 MedicineEntity 객체로 변환하여 리스트에 추가
             for (JsonNode itemNode : rowsNode) {
-                MedicineEntity medicine = objectMapper.treeToValue(itemNode, MedicineEntity.class);
+                MedicinePermissionEntity medicine = objectMapper.treeToValue(itemNode, MedicinePermissionEntity.class);
                 Medicine.add(medicine);
             }
 //            System.out.println(rowsNode);

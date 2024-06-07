@@ -58,7 +58,7 @@ public class UserController {
     }
 
     //이메일 수정시 이메일 인증
-    @PostMapping("/update-check-certification")
+    @PostMapping("/update-email-certification")
     public ResponseEntity<? super UpdateEmailCertificationResponseDto> checkCertification (
             @RequestBody @Valid UpdateEmailCertificationRequestDto requestBody
             ){
