@@ -2,10 +2,12 @@ package com.medicine.medicine_back.service.implement;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.medicine.medicine_back.dto.response.medicineInfo.GetMedicineInfoResponseDto;
 import com.medicine.medicine_back.dto.response.medicineInfo.MedicineInfoResponseDto;
 import com.medicine.medicine_back.dto.response.ResponseDto;
 import com.medicine.medicine_back.entity.MedicineInfoEntity;
 import com.medicine.medicine_back.repository.MedicineInfoRepository;
+import com.medicine.medicine_back.repository.resultSet.GetMedicineInfoResultSet;
 import com.medicine.medicine_back.service.MedicineInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -89,6 +91,18 @@ public class MedicineInfoServiceImplement implements MedicineInfoService {
             return ResponseDto.databaseError();
         }
         return MedicineInfoResponseDto.success();
+    }
+
+    //의약품 복약 정보 불러오기
+    @Override
+    public ResponseEntity<? super GetMedicineInfoResponseDto> getMedicineInfo(String ITEM_SEQ) {
+        GetMedicineInfoResultSet resultSet = null;
+        try {
+            resultSet = medicineInfoRepository.getMedicineInfo(ITEM_SEQ);
+        } catch (Exception exception) {
+            return ResponseDto.databaseError();
+        }
+        return GetMedicineInfoResponseDto.success(resultSet);
     }
 
     //외부 API 응답 파싱
