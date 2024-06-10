@@ -39,4 +39,34 @@ public class MedicineEntity {
     private String ITEM_IMAGE;
     @JsonProperty("ITEM_ENG_NAME")
     private String ITEM_ENG_NAME;
+    @JsonProperty("CHART")
+    private String CHART;
+    @JsonProperty("DRUG_SHAPE")
+    private String DRUG_SHAPE;
+    @JsonProperty("THICK")
+    private String THICK;
+    @JsonProperty("LENG_LONG")
+    private String LENG_LONG;
+    @JsonProperty("LENG_SHORT")
+    private String LENG_SHORT;
+    @JsonProperty("PRINT_FRONT")
+    private String PRINT_FRONT;
+    @JsonProperty("PRINT_BACK")
+    private String PRINT_BACK;
+    @JsonProperty("LINE_FRONT")
+    private String LINE_FRONT;
+    @JsonProperty("LINE_BACK")
+    private String LINE_BACK;
+    @JsonProperty("IMG_REGIST_TS")
+    private String IMG_REGIST_TS;
+    @JsonProperty("MARK_CODE_FRONT_ANAL")
+    private String MARK_CODE_FRONT_ANAL;
+    @JsonProperty("MARK_CODE_BACK_ANAL")
+    private String MARK_CODE_BACK_ANAL;
+    @JsonProperty("MARK_CODE_FRONT_IMG")
+    private String MARK_CODE_FRONT_IMG;
+    @JsonProperty("MARK_CODE_BACK_IMG")
+    private String MARK_CODE_BACK_IMG;
+    @JsonProperty("CHANGE_DATE")
+    private String CHANGE_DATE;
 }

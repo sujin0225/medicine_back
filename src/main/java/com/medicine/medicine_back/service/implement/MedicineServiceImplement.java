@@ -11,14 +11,20 @@ import com.medicine.medicine_back.repository.resultSet.GetMedicineResultSet;
 import com.medicine.medicine_back.service.MedicineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -38,33 +44,30 @@ public class MedicineServiceImplement implements MedicineService {
             int totalRecords = 0;
 
             while (!isLastPage) {
-                String originalString = apiKey;
-                System.out.println(apiKey);
-                String encodedString = URLEncoder.encode(originalString, "UTF-8");
-                System.out.println("Encoded URL: " + encodedString);
+                URI uri = null;
+                try {
+                    uri = new URI(UriComponentsBuilder
+                            .fromUriString("http://apis.data.go.kr/1471000/MdcinGrnIdntfcInfoService01/getMdcinGrnIdntfcInfoList01")
+                            .queryParam("serviceKey", apiKey)
+                            .queryParam("type", "json")
+                            .queryParam("pageNo", pageNo)
+                            .queryParam("numOfRows", "300")
+                            .build()
+                            .toUriString());
+                    System.out.println(uri);
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
 
-                final String baseUrl = "http://apis.data.go.kr/1471000/MdcinGrnIdntfcInfoService01/getMdcinGrnIdntfcInfoList01?" + apiKey + "&type=json&item_name=&entp_name=&item_seq=&img_regist_ts=";
-                String url = baseUrl + "&pageNo=" + pageNo + "&numOfRows=300&edi_code=";
-                System.out.println("요청 URL: " + url);
                 RestTemplate restTemplate = new RestTemplate();
-                ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("Content-type", "application/json; charset=UTF-8");
 
-//                UriComponentsBuilder builder = UriComponentsBuilder
-//                        .fromHttpUrl("http://apis.data.go.kr/1471000/MdcinGrnIdntfcInfoService01/getMdcinGrnIdntfcInfoList01")
-//                        .queryParam("serviceKey", apiKey)
-//                        .queryParam("type", "json")
-//                        .queryParam("item_name", "")
-//                        .queryParam("entp_name", "")
-//                        .queryParam("item_seq", "")
-//                        .queryParam("img_regist_ts", "")
-//                        .queryParam("pageNo", pageNo)
-//                        .queryParam("numOfRows", "300")
-//                        .queryParam("edi_code", "");
-//                String url = builder.toUriString();
-//                System.out.println(url);
-//
-//                RestTemplate restTemplate = new RestTemplate();
-//                ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+                HttpEntity<Map<String,String>> requestMessage = new HttpEntity<>(headers);
+
+                ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, requestMessage,
+                        String.class);
+                String apiTest = response.getBody();
 
 
                 if (totalRecords == 0) {
