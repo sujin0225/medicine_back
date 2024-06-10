@@ -7,6 +7,7 @@ import com.medicine.medicine_back.dto.response.medicinePermission.GetMedicinePer
 import com.medicine.medicine_back.dto.response.medicinePermission.MedicinePermissionResponseDto;
 import com.medicine.medicine_back.entity.MedicinePermissionEntity;
 import com.medicine.medicine_back.repository.MedicinePermissionRepository;
+import com.medicine.medicine_back.repository.resultSet.GetMedicinePermissionResultSet;
 import com.medicine.medicine_back.service.MedicinePermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -93,7 +94,13 @@ public class MedicinePermissionServiceImplement implements MedicinePermissionSer
     //의약품 제품 허가정보 불러오기
     @Override
     public ResponseEntity<? super GetMedicinePermissionResponseDto> getMedicinePermission(String ITEM_SEQ) {
-        return null;
+        GetMedicinePermissionResultSet resultSet = null;
+        try {
+            resultSet = medicinePermissionRepository.getMedicinePermission(ITEM_SEQ);
+        } catch (Exception exception) {
+            return ResponseDto.databaseError();
+        }
+        return GetMedicinePermissionResponseDto.success(resultSet);
     }
 
     //외부 API 응답 파싱
