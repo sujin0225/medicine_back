@@ -37,4 +37,6 @@ public class MedicinePermissionEntity {
     private String EDI_CODE;
     @JsonProperty("CHART")
     private String CHART;
+    @JsonProperty("ITEM_PERMIT_DATE")
+    private String ITEM_PERMIT_DATE;
 }

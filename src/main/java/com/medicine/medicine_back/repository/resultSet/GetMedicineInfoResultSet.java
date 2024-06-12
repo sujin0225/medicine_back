@@ -9,4 +9,6 @@ public interface GetMedicineInfoResultSet {
     String getintrc_Qesitm();
     String getdeposit_Method_Qesitm();
     String getupdate_De();
+    String getopen_De();
+    String getse_Qesitm();
 }

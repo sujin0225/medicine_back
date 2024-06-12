@@ -16,7 +16,7 @@ public class CoordinateConverter {
         CRSFactory crsFactory = new CRSFactory();
 
         // TM과 WGS84 좌표계 정의
-        CoordinateReferenceSystem crsTM = crsFactory.createFromName("EPSG:5186");
+        CoordinateReferenceSystem crsTM = crsFactory.createFromName("EPSG:5174");
         CoordinateReferenceSystem crsWGS84 = crsFactory.createFromName("EPSG:4326");
 
         // 좌표 변환 객체 생성

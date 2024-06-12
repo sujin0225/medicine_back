@@ -9,4 +9,5 @@ public interface GetMedicinePermissionResultSet {
     String getMAIN_INGR_ENG();
     String getEDI_CODE();
     String getCHART();
+    String getITEM_PERMIT_DATE();
 }

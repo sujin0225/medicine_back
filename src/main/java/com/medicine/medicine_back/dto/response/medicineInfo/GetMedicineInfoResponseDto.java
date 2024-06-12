@@ -18,6 +18,8 @@ public class GetMedicineInfoResponseDto extends ResponseDto {
     private String intrc_Qesitm;
     private String deposit_Method_Qesitm;
     private String update_De;
+    private String open_De;
+    private String se_Qesitm;
 
     private GetMedicineInfoResponseDto(GetMedicineInfoResultSet resultSet) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
@@ -29,6 +31,8 @@ public class GetMedicineInfoResponseDto extends ResponseDto {
         this.intrc_Qesitm = resultSet.getintrc_Qesitm();
         this.deposit_Method_Qesitm = resultSet.getdeposit_Method_Qesitm();
         this.update_De = resultSet.getupdate_De();
+        this.open_De = resultSet.getopen_De();
+        this.se_Qesitm = resultSet.getse_Qesitm();
     }
 
     //성공

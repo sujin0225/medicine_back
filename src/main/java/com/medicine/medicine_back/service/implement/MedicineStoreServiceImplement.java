@@ -70,11 +70,12 @@ public class MedicineStoreServiceImplement implements MedicineStoreService {
         if (Y < -90 || Y > 90 || X < -180 || X > 180) {
             throw new IllegalArgumentException("위도는 -90과 90 사이, 경도는 -180과 180 사이의 값이어야 합니다.");
         }
-        return medicineStoreRepository.findClosest(X, Y);
+        // X와 Y를 바꾸어 호출
+        return medicineStoreRepository.findClosest(Y, X);
     }
 
     //외부 API 응답 파싱
-    private List<MedicineStoreEntity> parsePharmacies(String body){
+    private List<MedicineStoreEntity> parsePharmacies(String body) {
         ObjectMapper objectMapper = new ObjectMapper();
         List<MedicineStoreEntity> pharmacies = new ArrayList<>();
         CoordinateConverter coordinateConverter = new CoordinateConverter();
@@ -100,8 +101,8 @@ public class MedicineStoreServiceImplement implements MedicineStoreService {
                 if (xStr != null && !xStr.isEmpty() && yStr != null && !yStr.isEmpty()) {
                     double[] wgs84 = coordinateConverter.convertTMToWGS84(xStr, yStr);
                     System.out.println("Converted latitude: " + wgs84[0] + ", longitude: " + wgs84[1]);
-                    pharmacy.setX(String.valueOf(wgs84[0]));
-                    pharmacy.setY(String.valueOf(wgs84[1]));
+                    pharmacy.setX(String.valueOf(wgs84[1])); // 경도(longitude)
+                    pharmacy.setY(String.valueOf(wgs84[0])); // 위도(latitude)
                 }
 
                 if ("영업중".equals(pharmacy.getDTLSTATENM())) {
@@ -114,7 +115,10 @@ public class MedicineStoreServiceImplement implements MedicineStoreService {
         return pharmacies;
     }
 
-//전체 게시글 수
+
+
+
+    //전체 게시글 수
 private int parseTotalRecords(String responseBody) {
     ObjectMapper objectMapper = new ObjectMapper();
     int totalRecords = 0;

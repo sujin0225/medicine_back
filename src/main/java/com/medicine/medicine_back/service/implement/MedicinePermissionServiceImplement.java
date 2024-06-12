@@ -62,7 +62,7 @@ public class MedicinePermissionServiceImplement implements MedicinePermissionSer
                 ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, requestMessage,
                         String.class);
                 String apiTest = response.getBody();
-                System.out.println(apiTest);
+//                System.out.println(apiTest);
 
 
                 if (totalRecords == 0) {

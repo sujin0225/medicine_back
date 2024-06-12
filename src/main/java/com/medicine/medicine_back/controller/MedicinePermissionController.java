@@ -23,7 +23,7 @@ public class MedicinePermissionController {
         return response;
     }
 
-    //의약품 제품 허가정보 불러오가
+    //의약품 제품 허가정보 불러오기
     @GetMapping("/{ITEM_SEQ}")
     public ResponseEntity<? super GetMedicinePermissionResponseDto> getMedicinePermission(
             @PathVariable("ITEM_SEQ") String ITEM_SEQ

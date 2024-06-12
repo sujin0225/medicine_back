@@ -35,4 +35,8 @@ public class MedicineInfoEntity {
     private String deposit_Method_Qesitm;
     @JsonProperty("updateDe")
     private String update_De;
+    @JsonProperty("openDe")
+    private String open_De;
+    @JsonProperty("seQesitm")
+    private String se_Qesitm;
 }

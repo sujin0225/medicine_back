@@ -18,6 +18,7 @@ public class GetMedicinePermissionResponseDto extends ResponseDto {
     private String MAIN_INGR_ENG;
     private String EDI_CODE;
     private String CHART;
+    private String ITEM_PERMIT_DATE;
 
     private GetMedicinePermissionResponseDto(GetMedicinePermissionResultSet resultSet) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
@@ -29,6 +30,7 @@ public class GetMedicinePermissionResponseDto extends ResponseDto {
         this.MAIN_INGR_ENG = resultSet.getMAIN_INGR_ENG();
         this.EDI_CODE = resultSet.getEDI_CODE();
         this.CHART = resultSet.getCHART();
+        this.ITEM_PERMIT_DATE = resultSet.getITEM_PERMIT_DATE();
     }
 
     //성공
