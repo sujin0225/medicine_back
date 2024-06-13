@@ -2,10 +2,13 @@ package com.medicine.medicine_back.service.implement;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medicine.medicine_back.common.CoordinateConverter;
+import com.medicine.medicine_back.common.GeocodingService;
 import com.medicine.medicine_back.dto.response.ResponseDto;
+import com.medicine.medicine_back.dto.response.medicineStore.GetMedicineStoreListResponseDto;
 import com.medicine.medicine_back.dto.response.medicineStore.MedicineStoreResponseDto;
 import com.medicine.medicine_back.entity.MedicineStoreEntity;
 import com.medicine.medicine_back.repository.MedicineStoreRepository;
+import com.medicine.medicine_back.repository.resultSet.GetMedicineStoreResultSet;
 import com.medicine.medicine_back.service.MedicineStoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MedicineStoreServiceImplement implements MedicineStoreService {
     private final MedicineStoreRepository medicineStoreRepository;
+    private final GeocodingService geocodingService;
 
     @Value("${medicine.store.api.key}")
     private String apiKey;
@@ -74,6 +78,26 @@ public class MedicineStoreServiceImplement implements MedicineStoreService {
         return medicineStoreRepository.findClosest(Y, X);
     }
 
+    //상비의약품 판매처 지역으로 검색
+    @Override
+    public ResponseEntity<? super GetMedicineStoreListResponseDto> findAreaStore(String address, double radius) {
+        List<GetMedicineStoreResultSet> resultSet = new ArrayList<>();
+        try {
+            // 주소를 위도와 경도로 변환
+            double[] coordinates = geocodingService.getCoordinates(address);
+            double latitude = coordinates[0];
+            double longitude = coordinates[1];
+            resultSet = medicineStoreRepository.findWithinRadius(latitude, longitude, radius);
+            System.out.println("lat "+latitude);
+            System.out.println("lon "+longitude);
+            // 반경 내의 약국 찾기
+//            medicineStoreRepository.findWithinRadius(latitude, longitude, radius);
+        } catch (Exception exception) {
+            return ResponseDto.databaseError();
+        }
+        return GetMedicineStoreListResponseDto.success(resultSet);
+    }
+
     //외부 API 응답 파싱
     private List<MedicineStoreEntity> parsePharmacies(String body) {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -115,11 +139,8 @@ public class MedicineStoreServiceImplement implements MedicineStoreService {
         return pharmacies;
     }
 
-
-
-
     //전체 게시글 수
-private int parseTotalRecords(String responseBody) {
+    private int parseTotalRecords(String responseBody) {
     ObjectMapper objectMapper = new ObjectMapper();
     int totalRecords = 0;
 
