@@ -3,14 +3,19 @@ package com.medicine.medicine_back.service.implement;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medicine.medicine_back.dto.response.ResponseDto;
+import com.medicine.medicine_back.dto.response.medicine.GetMedicineListResponseDto;
 import com.medicine.medicine_back.dto.response.medicine.GetMedicineResponseDto;
 import com.medicine.medicine_back.dto.response.medicine.MedicineResponseDto;
 import com.medicine.medicine_back.entity.MedicineEntity;
+import com.medicine.medicine_back.repository.MedicineListRepository;
 import com.medicine.medicine_back.repository.MedicineRepository;
 import com.medicine.medicine_back.repository.resultSet.GetMedicineResultSet;
 import com.medicine.medicine_back.service.MedicineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -19,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.awt.print.Pageable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
@@ -30,6 +36,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MedicineServiceImplement implements MedicineService {
     private final MedicineRepository medicineRepository;
+    private final MedicineListRepository medicineListRepository;
 
     @Value("${medicine.api.key}")
     private String apiKey;
@@ -107,6 +114,23 @@ public class MedicineServiceImplement implements MedicineService {
             return ResponseDto.databaseError();
         }
         return GetMedicineResponseDto.success(resultSet);
+    }
+
+    //의약품 리스트 불러오기
+    public ResponseEntity<? super GetMedicineListResponseDto> getMedicineList(int page, int pageSize, String item_name) {
+        try {
+            PageRequest pageable = PageRequest.of(page, pageSize);
+            Page<MedicineEntity> medicinePage = medicineListRepository.findAll(pageable);
+            List<MedicineEntity> medicineEntities = medicinePage.getContent();
+            int totalPages = medicinePage.getTotalPages();
+            int totalCounts = (int) medicinePage.getTotalElements();
+
+//            return ResponseEntity.ok(GetMedicineListResponseDto.success(medicineEntities, page, totalPages, totalCounts));
+            return GetMedicineListResponseDto.success(medicineEntities, page, totalPages, totalCounts, item_name);
+        } catch (Exception exception) {
+            return ResponseDto.databaseError();
+        }
+
     }
 
     //외부 API 응답 파싱

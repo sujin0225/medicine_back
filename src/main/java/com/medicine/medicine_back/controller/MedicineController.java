@@ -1,14 +1,12 @@
 package com.medicine.medicine_back.controller;
 
+import com.medicine.medicine_back.dto.response.medicine.GetMedicineListResponseDto;
 import com.medicine.medicine_back.dto.response.medicine.GetMedicineResponseDto;
 import com.medicine.medicine_back.dto.response.medicine.MedicineResponseDto;
 import com.medicine.medicine_back.service.MedicineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/medicine")
@@ -30,5 +28,14 @@ public class MedicineController {
     ){
         ResponseEntity<? super GetMedicineResponseDto> response = medicineService.getMedicine(ITEM_SEQ);
         return response;
+    }
+
+    //의약품 리스트 불러오기
+    @GetMapping("/list")
+    public ResponseEntity<? super GetMedicineListResponseDto> getMedicineList(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "16") int pageSize,
+            @RequestParam(defaultValue = "") String item_name) {
+        return medicineService.getMedicineList(page, pageSize, item_name);
     }
 }

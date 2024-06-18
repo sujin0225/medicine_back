@@ -20,7 +20,8 @@ public interface FavoriteRepository extends JpaRepository<FavoriteEntity, Favori
                             "F.write_datetime, F.ITEM_IMAGE " +
                             "FROM favorite F " +
                             "INNER JOIN user U ON F.user_id = U.user_id " +
-                            "WHERE U.user_id = :user_id", // itemSeq 조건을 제거
+                            "WHERE U.user_id = :user_id " +
+                            "ORDER BY write_datetime DESC ",
             nativeQuery = true
     )
     List<GetFavoriteResultSet> getFavorite(@Param("user_id") String userId);
