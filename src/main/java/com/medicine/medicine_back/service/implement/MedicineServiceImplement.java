@@ -2,6 +2,7 @@ package com.medicine.medicine_back.service.implement;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.medicine.medicine_back.controller.MedicineController;
 import com.medicine.medicine_back.dto.response.ResponseDto;
 import com.medicine.medicine_back.dto.response.medicine.GetMedicineListResponseDto;
 import com.medicine.medicine_back.dto.response.medicine.GetMedicineResponseDto;
@@ -12,6 +13,8 @@ import com.medicine.medicine_back.repository.MedicineRepository;
 import com.medicine.medicine_back.repository.resultSet.GetMedicineResultSet;
 import com.medicine.medicine_back.service.MedicineService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -120,17 +123,16 @@ public class MedicineServiceImplement implements MedicineService {
     public ResponseEntity<? super GetMedicineListResponseDto> getMedicineList(int page, int pageSize, String item_name) {
         try {
             PageRequest pageable = PageRequest.of(page, pageSize);
-            Page<MedicineEntity> medicinePage = medicineListRepository.findAll(pageable);
+            Page<MedicineEntity> medicinePage = medicineListRepository.findByITEM_NAMEContaining(item_name, pageable);
+
             List<MedicineEntity> medicineEntities = medicinePage.getContent();
             int totalPages = medicinePage.getTotalPages();
             int totalCounts = (int) medicinePage.getTotalElements();
 
-//            return ResponseEntity.ok(GetMedicineListResponseDto.success(medicineEntities, page, totalPages, totalCounts));
-            return GetMedicineListResponseDto.success(medicineEntities, page, totalPages, totalCounts, item_name);
+            return GetMedicineListResponseDto.success(medicineEntities, page, totalPages, totalCounts);
         } catch (Exception exception) {
             return ResponseDto.databaseError();
         }
-
     }
 
     //외부 API 응답 파싱

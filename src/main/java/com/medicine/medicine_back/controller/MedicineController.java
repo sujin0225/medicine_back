@@ -33,7 +33,7 @@ public class MedicineController {
     //의약품 리스트 불러오기
     @GetMapping("/list")
     public ResponseEntity<? super GetMedicineListResponseDto> getMedicineList(
-            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "16") int pageSize,
             @RequestParam(defaultValue = "") String item_name) {
         return medicineService.getMedicineList(page, pageSize, item_name);

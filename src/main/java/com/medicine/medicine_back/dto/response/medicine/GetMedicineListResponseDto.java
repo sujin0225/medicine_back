@@ -18,15 +18,15 @@ public class GetMedicineListResponseDto extends ResponseDto {
     private int totalCount;
     private List<MedicineListItem>  medicineListItems;
 
-    private GetMedicineListResponseDto(List<MedicineEntity> medicineEntities, int page, int totalPages, int totalCount, String item_name) {
+    private GetMedicineListResponseDto(List<MedicineEntity> medicineEntities, int page, int totalPages, int totalCount) {
         super(ResponseCode.SUCCESS, ResponseMessage.SUCCESS);
         this.page = page;
         this.totalPages = totalPages;
         this.totalCount = totalCount;
         this.medicineListItems = MedicineListItem.getMedicineList(medicineEntities);
     }
-    public static ResponseEntity<GetMedicineListResponseDto> success(List<MedicineEntity> medicineEntities, int page, int totalPages, int totalCount, String item_name) {
-        GetMedicineListResponseDto result = new GetMedicineListResponseDto(medicineEntities, page, totalPages, totalCount, item_name);
+    public static ResponseEntity<GetMedicineListResponseDto> success(List<MedicineEntity> medicineEntities, int page, int totalPages, int totalCount) {
+        GetMedicineListResponseDto result = new GetMedicineListResponseDto(medicineEntities, page, totalPages, totalCount);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }
