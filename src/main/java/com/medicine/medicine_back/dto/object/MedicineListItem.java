@@ -17,6 +17,7 @@ public class MedicineListItem {
     private String ITEM_NAME;
     private String FORM_CODE_NAME;
     private String ENTP_NAME;
+    private String CLASS_NAME;
     private String ETC_OTC_NAME;
     private String ITEM_IMAGE;
 
@@ -25,6 +26,7 @@ public class MedicineListItem {
         this.ITEM_NAME = medicineEntity.getITEM_NAME();
         this.FORM_CODE_NAME = medicineEntity.getFORM_CODE_NAME();
         this.ENTP_NAME = medicineEntity.getENTP_NAME();
+        this.CLASS_NAME = medicineEntity.getCLASS_NAME();
         this.ETC_OTC_NAME = medicineEntity.getETC_OTC_NAME();
         this.ITEM_IMAGE = medicineEntity.getITEM_IMAGE();
     }
